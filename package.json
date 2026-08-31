@@ -1,0 +1,11 @@
+{
+  "name": "pakbuild-pro",
+  "version": "1.0.0",
+  "description": "PakBuild Pro - Full Stack Construction Cost Estimator",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.0"
+  }
+}

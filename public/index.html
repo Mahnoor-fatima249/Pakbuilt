@@ -1,0 +1,2538 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <!-- HEAD & THEME VARIABLES -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PakBuild Pro - Real Estate & Construction Cost Estimator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'var(--primary-color)',
+                        primaryHover: 'var(--primary-hover)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <!-- jsPDF for PDF Report Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #059669; /* Default Emerald Green */
+            --primary-hover: #047857;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body[dir="rtl"] {
+            font-family: 'Noto Nastaliq Urdu', 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .light .glass {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+    </style>
+</head>
+<!-- ================= BACK TO TOP BUTTON ================= -->
+<button id="backToTopBtn" onclick="scrollToTop()" style="position: fixed; bottom: 24px; left: 24px; z-index: 9999; background: #1e293b; color: white; width: 48px; height: 48px; border-radius: 50%; border: 1px solid #334155; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; pointer-events: none; transition: all 0.3s ease;">
+    <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+    </svg>
+</button>
+
+<!-- ================= CHATBOT FLOATING ICON ================= -->
+<div id="aiChatBtn" onclick="toggleChatWindow(event)" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; background: linear-gradient(135deg, #059669, #0d9488); color: white; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.3s;">
+    <svg xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+</div>
+
+<!-- ================= CHAT WINDOW BOX ================= -->
+<div id="aiChatWindow" class="theme-dark" style="position: fixed; bottom: 96px; right: 24px; z-index: 9999; width: 420px; max-width: 90vw; background: #0f172a; color: #f8fafc; border: 1px solid #334155; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: none; height: 560px; overflow: hidden; font-family: sans-serif; transition: background 0.3s, color 0.3s;">
+    
+    <div style="display: flex; height: 100%; width: 100%;">
+        <!-- Sidebar for Chat History & Search -->
+        <div id="chatSidebar" style="width: 170px; background: var(--sidebar-bg, #020617); border-right: 1px solid var(--border-col, #1e293b); display: flex; flex-direction: column; justify-content: space-between; padding: 10px; transition: width 0.3s ease;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- New Chat Button -->
+                <button onclick="startNewChatSession()" style="background: #059669; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    + New Chat
+                </button>
+                
+                <!-- Search Chat Input Box -->
+                <input type="text" id="sidebarSearchInput" placeholder="Search chats..." oninput="filterChatHistory(this.value)" style="background: var(--input-bg, #0f172a); border: 1px solid #334155; border-radius: 6px; padding: 5px 8px; color: var(--text-col, white); font-size: 10px; outline: none;">
+
+                <!-- History Title & Clear All -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 2px;">
+                    <span style="font-size: 9px; color: #64748b; font-weight: bold; text-transform: uppercase;">History</span>
+                    <button onclick="clearAllChatHistory()" style="background: none; border: none; color: #ef4444; font-size: 10px; cursor: pointer;" title="Clear All History">Clear All</button>
+                </div>
+                
+                <!-- History List Container -->
+                <div id="chatHistoryList" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 250px;"></div>
+            </div>
+            
+            <!-- Sidebar Footer with Export Option -->
+            <div style="border-top: 1px solid var(--border-col, #1e293b); padding-top: 8px; display: flex; flex-direction: column; gap: 6px; text-align: center;">
+                <button onclick="exportChatHistory()" style="background: #1e293b; color: #34d399; border: 1px solid #334155; border-radius: 6px; font-size: 9px; padding: 4px; cursor: pointer;">📥 Export Chat</button>
+                <div style="font-size: 9px; color: #64748b;">v9.1 Ultimate Clean</div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div style="flex: 1; display: flex; flex-direction: column; height: 100%; background: var(--main-bg, #0f172a); position: relative; overflow: hidden;">
+            
+            <!-- Chat Header -->
+            <div style="background: var(--header-bg, #020617); padding: 10px 16px; border-bottom: 1px solid var(--border-col, #1e293b); display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="toggleSidebar()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px;">☰</button>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span id="botAvatarEmoji" style="font-size: 16px; cursor: pointer;" onclick="cycleBotAvatar()" title="Click to change bot persona">🏗️</span>
+                        <div>
+                            <div id="botTitleName" style="font-weight: bold; font-size: 12px; color: var(--text-col, white);">PakBuild Assistant</div>
+                            <div style="font-size: 9px; color: #34d399;">● Online</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <!-- Theme Toggle Button -->
+                    <button onclick="toggleThemeMode()" id="themeToggleBtn" style="background: none; border: none; color: #94a3b8; font-size: 14px; cursor: pointer;" title="Toggle Light/Dark Mode">☀️</button>
+                    <!-- Close Chat Button -->
+                    <button onclick="toggleChatWindow(event)" style="background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer;">&times;</button>
+                </div>
+            </div>
+
+            <!-- Chat Body -->
+            <div id="chatMessages" onscroll="checkScrollPosition()" style="padding: 12px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 12px;"></div>
+
+            <!-- Floating New Message Button -->
+            <button id="scrollToBottomChatBtn" onclick="forceScrollChatToBottom()" style="position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%); background: #059669; color: white; font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 20px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 10;">
+                ⬇ New Message
+            </button>
+
+            <!-- Quick Chips -->
+            <div style="padding: 6px 12px; background: var(--header-bg, #020617); border-top: 1px solid var(--border-col, #1e293b); display: flex; gap: 6px; overflow-x: auto; white-space: nowrap;">
+                <button onclick="sendQuickPrompt('5 Marla Cost')" style="background: var(--chip-bg, #1e293b); color: var(--chip-text, #cbd5e1); border: 1px solid #334155; padding: 4px 10px; border-radius: 12px; font-size: 10px; cursor: pointer;">🏗️ 5 Marla Cost</button>
+                <button onclick="sendQuickPrompt('Cement Price')" style="background: var(--chip-bg, #1e293b); color: var(--chip-text, #cbd5e1); border: 1px solid #334155; padding: 4px 10px; border-radius: 12px; font-size: 10px; cursor: pointer;">🧱 Cement Rate</button>
+                <button onclick="sendQuickPrompt('Steel Sariya')" style="background: var(--chip-bg, #1e293b); color: var(--chip-text, #cbd5e1); border: 1px solid #334155; padding: 4px 10px; border-radius: 12px; font-size: 10px; cursor: pointer;">⛓️ Steel Sariya</button>
+                <button onclick="sendQuickPrompt('Labor Rates')" style="background: var(--chip-bg, #1e293b); color: var(--chip-text, #cbd5e1); border: 1px solid #334155; padding: 4px 10px; border-radius: 12px; font-size: 10px; cursor: pointer;">👷‍♂️ Labor Rate</button>
+            </div>
+
+            <!-- Chat Input Footer -->
+            <div style="padding: 10px; background: var(--header-bg, #020617); border-top: 1px solid var(--border-col, #1e293b); display: flex; gap: 6px; align-items: center;">
+                <!-- Voice Input Microphone Button -->
+                <button id="micBtn" onclick="toggleVoiceInput()" style="background: var(--chip-bg, #1e293b); color: #94a3b8; border: 1px solid #334155; border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px;" title="Voice Input (Speech to Text)">🎤</button>
+                
+                <input type="text" id="chatInput" placeholder="Type message here..." onkeypress="handleChatKeyPress(event)" style="flex: 1; background: var(--input-bg, #0f172a); border: 1px solid #334155; border-radius: 8px; padding: 8px 12px; color: var(--text-col, white); font-size: 12px; outline: none;">
+                
+                <button onclick="sendUserMessage()" style="background: #059669; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= STYLES & DYNAMIC VARIABLES ================= -->
+<style>
+    .theme-dark {
+        --main-bg: #0f172a;
+        --sidebar-bg: #020617;
+        --header-bg: #020617;
+        --border-col: #1e293b;
+        --text-col: #f8fafc;
+        --input-bg: #0f172a;
+        --chip-bg: #1e293b;
+        --chip-text: #cbd5e1;
+        --bot-bubble-bg: #1e293b;
+        --bot-bubble-text: #cbd5e1;
+        --bot-border: #334155;
+    }
+    .theme-light {
+        --main-bg: #f8fafc;
+        --sidebar-bg: #f1f5f9;
+        --header-bg: #ffffff;
+        --border-col: #e2e8f0;
+        --text-col: #0f172a;
+        --input-bg: #ffffff;
+        --chip-bg: #e2e8f0;
+        --chip-text: #334155;
+        --bot-bubble-bg: #ffffff;
+        --bot-bubble-text: #334155;
+        --bot-border: #cbd5e1;
+    }
+    .typing-dot {
+        height: 6px;
+        width: 6px;
+        background: #94a3b8;
+        border-radius: 50%;
+        display: inline-block;
+        animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounce {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1.0); }
+    }
+    .listening-pulse {
+        animation: pulse-red 1.5s infinite;
+        background: #ef4444 !important;
+        color: white !important;
+    }
+    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    /* Markdown enhancements inside bubbles */
+    .bot-markdown-content ul { padding-left: 16px; margin: 4px 0; }
+    .bot-markdown-content li { margin-bottom: 2px; }
+    .bot-markdown-content code { background: rgba(0,0,0,0.2); padding: 2px 4px; border-radius: 4px; font-family: monospace; }
+</style>
+
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+    const backToTopBtn = document.getElementById('backToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            if (backToTopBtn) {
+                backToTopBtn.style.opacity = '1';
+                backToTopBtn.style.pointerEvents = 'auto';
+            }
+        } else {
+            if (backToTopBtn) {
+                backToTopBtn.style.opacity = '0';
+                backToTopBtn.style.pointerEvents = 'none';
+            }
+        }
+    });
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    let chatSessions = JSON.parse(localStorage.getItem('pakBuildCleanSessions_v9.1')) || [
+        { id: 'session_init', title: 'New Conversation', html: '' }
+    ];
+    let currentSessionId = localStorage.getItem('pakBuildActiveId_v9.1') || chatSessions[0].id;
+    let currentTheme = localStorage.getItem('pakBuildTheme_v9.1') || 'dark';
+    
+    // Bot Avatar Persona List
+    const botPersonas = [
+        { emoji: '🏗️', name: 'PakBuild Assistant' },
+        { emoji: '📊', name: 'Rates Specialist' },
+        { emoji: '👷‍♂️', name: 'Structure Expert' }
+    ];
+    let currentPersonaIndex = parseInt(localStorage.getItem('pakBuildPersona_v9.1')) || 0;
+
+    let inactivityTimer = null;
+    let warningTimer = null;
+    let recognition = null;
+
+    // --- AUTH STATE CHECK ---
+    function checkAuthState() {
+        const token = localStorage.getItem('pakbuild_token');
+        const user = JSON.parse(localStorage.getItem('pakbuild_user'));
+        const authButtons = document.getElementById('authButtons');
+        const userMenu = document.getElementById('userMenu');
+        const navUserName = document.getElementById('navUserName');
+
+        if (token && user) {
+            if (authButtons) authButtons.classList.add('hidden');
+            if (userMenu) userMenu.classList.remove('hidden');
+            if (navUserName) {
+                navUserName.textContent = user.name;
+                navUserName.href = user.role === 'admin' ? '/pages/admin.html' : '/pages/dashboard.html';
+            }
+        } else {
+            if (authButtons) authButtons.classList.remove('hidden');
+            if (userMenu) userMenu.classList.add('hidden');
+        }
+    }
+
+    function navLogout() {
+        localStorage.removeItem('pakbuild_token');
+        localStorage.removeItem('pakbuild_user');
+        window.location.reload();
+    }
+
+    // --- SAVE PROJECT TO BACKEND ---
+    async function saveProjectToBackend(projectData) {
+        const token = localStorage.getItem('pakbuild_token');
+        if (!token) return;
+        try {
+            await fetch('/api/auth/save-project', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(projectData)
+            });
+        } catch (e) { console.error('Save project failed:', e); }
+    }
+
+    // --- FETCH LIVE MATERIAL RATES FROM BACKEND ---
+    async function fetchLiveRates() {
+        try {
+            const res = await fetch('/api/materials');
+            const data = await res.json();
+            if (data.success && data.rates.length > 0) {
+                // Update ticker with live rates
+                const ticker = document.querySelector('.animate-ticker');
+                if (ticker) {
+                    const cementRate = data.rates.find(r => r.material === 'cement' && r.city === 'lahore');
+                    const steelRate = data.rates.find(r => r.material === 'steel' && r.city === 'lahore');
+                    const brickRate = data.rates.find(r => r.material === 'bricks' && r.city === 'lahore');
+                    const sandRate = data.rates.find(r => r.material === 'sand' && r.city === 'lahore');
+                    if (cementRate) ticker.innerHTML = ticker.innerHTML.replace(/Cement.*?: PKR [\d, -]+/, `Cement (Per Bag): PKR ${cementRate.priceMin.toLocaleString()} - ${cementRate.priceMax.toLocaleString()}`);
+                }
+            }
+        } catch (e) { console.log('Live rates fetch skipped'); }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        applyTheme(currentTheme);
+        applyPersona();
+        renderSidebarHistory();
+        loadActiveChatSession();
+        checkAuthState();
+        fetchLiveRates();
+        
+        const chatWin = document.getElementById('aiChatWindow');
+        if (chatWin) {
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(eventType => {
+                chatWin.addEventListener(eventType, resetInactivityTimer);
+            });
+        }
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const speechToText = event.results[0][0].transcript;
+                const inputField = document.getElementById('chatInput');
+                if (inputField) {
+                    inputField.value = speechToText;
+                    sendUserMessage();
+                }
+                stopVoiceAnimation();
+            };
+
+            recognition.onerror = () => stopVoiceAnimation();
+            recognition.onend = () => stopVoiceAnimation();
+        }
+    });
+
+    // Theme Management
+    function toggleThemeMode() {
+        resetInactivityTimer();
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('pakBuildTheme_v9.1', currentTheme);
+        applyTheme(currentTheme);
+    }
+
+    function applyTheme(theme) {
+        const chatWin = document.getElementById('aiChatWindow');
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (!chatWin) return;
+        if (theme === 'light') {
+            chatWin.className = 'theme-light';
+            if (themeBtn) themeBtn.innerText = '🌙';
+        } else {
+            chatWin.className = 'theme-dark';
+            if (themeBtn) themeBtn.innerText = '☀️';
+        }
+    }
+
+    // Bot Persona Cycling
+    function cycleBotAvatar() {
+        resetInactivityTimer();
+        currentPersonaIndex = (currentPersonaIndex + 1) % botPersonas.length;
+        localStorage.setItem('pakBuildPersona_v9.1', currentPersonaIndex);
+        applyPersona();
+    }
+
+    function applyPersona() {
+        const p = botPersonas[currentPersonaIndex];
+        const emojiEl = document.getElementById('botAvatarEmoji');
+        const nameEl = document.getElementById('botTitleName');
+        if (emojiEl) emojiEl.innerText = p.emoji;
+        if (nameEl) nameEl.innerText = p.name;
+    }
+
+    // Search / Filter Chat History
+    function filterChatHistory(query) {
+        resetInactivityTimer();
+        renderSidebarHistory(query.trim().toLowerCase());
+    }
+
+    // Voice Input Toggle
+    function toggleVoiceInput() {
+        resetInactivityTimer();
+        if (!recognition) {
+            alert("Speech recognition is not supported in your browser.");
+            return;
+        }
+        const micBtn = document.getElementById('micBtn');
+        if (micBtn.classList.contains('listening-pulse')) {
+            recognition.stop();
+            stopVoiceAnimation();
+        } else {
+            try {
+                recognition.start();
+                micBtn.classList.add('listening-pulse');
+            } catch (e) {
+                recognition.stop();
+                stopVoiceAnimation();
+            }
+        }
+    }
+
+    function stopVoiceAnimation() {
+        const micBtn = document.getElementById('micBtn');
+        if (micBtn) micBtn.classList.remove('listening-pulse');
+    }
+
+    // Export Chat History
+    function exportChatHistory() {
+        resetInactivityTimer();
+        const session = chatSessions.find(s => s.id === currentSessionId);
+        if (!session || !session.html) {
+            alert("Export karne ke liye koi chat mojood nahi hai!");
+            return;
+        }
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = session.html;
+        const textContent = tempDiv.innerText || tempDiv.textContent;
+        
+        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `PakBuild_Chat_${Date.now()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // Inactivity Timers
+    function resetInactivityTimer() {
+        const chatWin = document.getElementById('aiChatWindow');
+        if (chatWin && chatWin.style.display === 'block') {
+            if (inactivityTimer) clearTimeout(inactivityTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+            
+            warningTimer = setTimeout(() => {
+                appendBotMessage("⚠️ Aapki taraf se koi message nahi aaya. Agar mazeed baat nahi karni toh chat 15 seconds mein khud hi band ho jayegi.");
+            }, 20000);
+
+            inactivityTimer = setTimeout(() => {
+                appendBotMessage("Allah Hafiz! 👋 Chat inactive honay ki wajah se band ki ja rahi hai. Phir milenge!");
+                setTimeout(() => { chatWin.style.display = 'none'; }, 1000);
+                if (inactivityTimer) clearTimeout(inactivityTimer);
+                if (warningTimer) clearTimeout(warningTimer);
+            }, 60000);
+        }
+    }
+
+    function toggleChatWindow(event) {
+        if (event) event.stopPropagation();
+        const chatWin = document.getElementById('aiChatWindow');
+        if (!chatWin) return;
+        
+        if (chatWin.style.display === 'none' || chatWin.style.display === '') {
+            chatWin.style.display = 'block';
+            const inputField = document.getElementById('chatInput');
+            if (inputField) inputField.focus();
+            resetInactivityTimer();
+        } else {
+            chatWin.style.display = 'none';
+            if (inactivityTimer) clearTimeout(inactivityTimer);
+            if (warningTimer) clearTimeout(warningTimer);
+        }
+    }
+
+    function toggleSidebar() {
+        resetInactivityTimer();
+        const sidebar = document.getElementById('chatSidebar');
+        if (!sidebar) return;
+        if (sidebar.style.width === '0px') {
+            sidebar.style.width = '170px';
+            sidebar.style.padding = '10px';
+        } else {
+            sidebar.style.width = '0px';
+            sidebar.style.padding = '0px';
+        }
+    }
+
+    function startNewChatSession() {
+        resetInactivityTimer();
+        const newId = 'session_' + Date.now();
+        const newSession = { id: newId, title: 'Chat ' + (chatSessions.length + 1), html: '' };
+        chatSessions.unshift(newSession);
+        currentSessionId = newId;
+        saveAllSessions();
+        renderSidebarHistory();
+        loadActiveChatSession();
+    }
+
+    function switchSession(id) {
+        resetInactivityTimer();
+        saveCurrentSessionContent();
+        currentSessionId = id;
+        localStorage.setItem('pakBuildActiveId_v9.1', currentSessionId);
+        loadActiveChatSession();
+        renderSidebarHistory();
+    }
+
+    function deleteSession(id, event) {
+        resetInactivityTimer();
+        if (event) event.stopPropagation();
+        if (chatSessions.length <= 1) {
+            alert("At least one chat session must remain.");
+            return;
+        }
+        
+        chatSessions = chatSessions.filter(s => s.id !== id);
+        if (currentSessionId === id) {
+            currentSessionId = chatSessions[0].id;
+        }
+        saveAllSessions();
+        renderSidebarHistory();
+        loadActiveChatSession();
+    }
+
+    function clearAllChatHistory() {
+        resetInactivityTimer();
+        if (confirm("Kya aap saari chat history delete karna chahte hain?")) {
+            chatSessions = [{ id: 'session_' + Date.now(), title: 'New Conversation', html: '' }];
+            currentSessionId = chatSessions[0].id;
+            saveAllSessions();
+            renderSidebarHistory();
+            loadActiveChatSession();
+        }
+    }
+
+    function saveCurrentSessionContent() {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return;
+        const session = chatSessions.find(s => s.id === currentSessionId);
+        if (session) {
+            session.html = chatMessages.innerHTML;
+            const firstUserBubble = chatMessages.querySelector('.user-bubble');
+            if (firstUserBubble && session.title.startsWith('Chat ')) {
+                session.title = firstUserBubble.innerText.substring(0, 16) + '...';
+            }
+            saveAllSessions();
+        }
+    }
+
+    function saveAllSessions() {
+        localStorage.setItem('pakBuildCleanSessions_v9.1', JSON.stringify(chatSessions));
+        localStorage.setItem('pakBuildActiveId_v9.1', currentSessionId);
+    }
+
+    function loadActiveChatSession() {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return;
+        const session = chatSessions.find(s => s.id === currentSessionId);
+        if (session && session.html.trim() !== "") {
+            chatMessages.innerHTML = session.html;
+        } else {
+            chatMessages.innerHTML = "";
+            const hour = new Date().getHours();
+            let timeGreeting = "Hello!";
+            if (hour < 12) timeGreeting = "Good Morning! ☀️";
+            else if (hour < 17) timeGreeting = "Good Afternoon! 🌤️";
+            else timeGreeting = "Good Evening! 🌙";
+            
+            appendBotMessage(`${timeGreeting} How can I assist you with your construction project today?`, false, true);
+        }
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function renderSidebarHistory(filterQuery = '') {
+        const listContainer = document.getElementById('chatHistoryList');
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
+        
+        const filtered = chatSessions.filter(s => s.title.toLowerCase().includes(filterQuery));
+        filtered.forEach(s => {
+            const itemDiv = document.createElement('div');
+            itemDiv.style.cssText = `display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; background: ${s.id === currentSessionId ? 'var(--bot-bubble-bg)' : 'transparent'}; color: var(--text-col);`;
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.style.cssText = "overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;";
+            titleSpan.innerText = s.title;
+            titleSpan.onclick = () => switchSession(s.id);
+            
+            const delBtn = document.createElement('button');
+            delBtn.innerHTML = "&times;";
+            delBtn.style.cssText = "background: none; border: none; color: #ef4444; font-size: 14px; cursor: pointer; padding-left: 6px;";
+            delBtn.title = "Delete Chat";
+            delBtn.onclick = (e) => deleteSession(s.id, e);
+
+            itemDiv.appendChild(titleSpan);
+            itemDiv.appendChild(delBtn);
+            listContainer.appendChild(itemDiv);
+        });
+    }
+
+    function checkScrollPosition() {
+        resetInactivityTimer();
+        const chatMessages = document.getElementById('chatMessages');
+        const scrollBtn = document.getElementById('scrollToBottomChatBtn');
+        if (!chatMessages || !scrollBtn) return;
+        const distanceFromBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight;
+        
+        if (distanceFromBottom > 80) {
+            scrollBtn.style.opacity = '1';
+            scrollBtn.style.pointerEvents = 'auto';
+        } else {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.pointerEvents = 'none';
+        }
+    }
+
+    function forceScrollChatToBottom() {
+        resetInactivityTimer();
+        const chatMessages = document.getElementById('chatMessages');
+        const scrollBtn = document.getElementById('scrollToBottomChatBtn');
+        if (!chatMessages) return;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (scrollBtn) {
+            scrollBtn.style.opacity = '0';
+            scrollBtn.style.pointerEvents = 'none';
+        }
+    }
+
+    function handleChatKeyPress(event) {
+        resetInactivityTimer();
+        if (event.key === 'Enter') sendUserMessage();
+    }
+
+    function sendQuickPrompt(text) {
+        resetInactivityTimer();
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) chatInput.value = text;
+        sendUserMessage();
+    }
+
+    function sendUserMessage() {
+        resetInactivityTimer();
+        const inputField = document.getElementById('chatInput');
+        if (!inputField) return;
+        const userText = inputField.value.trim();
+        if (!userText) return;
+
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return;
+
+        const userBubble = document.createElement('div');
+        userBubble.className = "user-bubble";
+        userBubble.style.cssText = "background: #059669; color: white; padding: 10px 14px; border-radius: 12px 12px 0 12px; max-width: 85%; align-self: flex-end; word-break: break-word;";
+        userBubble.innerText = userText;
+        chatMessages.appendChild(userBubble);
+
+        inputField.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        saveCurrentSessionContent();
+        renderSidebarHistory();
+
+        const typingId = showTypingIndicator("Analyzing market rates...");
+
+        setTimeout(() => {
+            removeTypingIndicator(typingId);
+            const botData = generateAIBotResponse(userText);
+            appendBotMessage(botData.text, true, false, botData.followUps);
+        }, 1000);
+    }
+
+    function showTypingIndicator(statusText = "Thinking...") {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return null;
+        const typingDiv = document.createElement('div');
+        const uniqueId = 'typing_' + Date.now();
+        typingDiv.id = uniqueId;
+        typingDiv.style.cssText = "background: var(--bot-bubble-bg); color: var(--bot-bubble-text); padding: 10px 14px; border-radius: 12px 12px 12px 0; max-width: 88%; align-self: flex-start; border: 1px solid var(--bot-border); display: flex; align-items: center; gap: 8px; font-size: 11px; font-style: italic;";
+        
+        typingDiv.innerHTML = `<span>${statusText}</span><div style="display: flex; gap: 4px;"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return uniqueId;
+    }
+
+    function removeTypingIndicator(id) {
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (el) el.remove();
+    }
+
+    // Clean Markdown Parser
+    function parseMarkdownToHTML(text) {
+        let html = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        // Code blocks `code`
+        html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // Bold **text**
+        html = html.replace(/\*\*([^*]+)\*\*/g, '<strong style="color: var(--text-col); font-weight: bold;">$1</strong>');
+
+        // Italic *text*
+        html = html.replace(/\*([^*]+)\*/g, '<em style="color: #34d399;">$1</em>');
+
+        // Bullet lists format (- or *)
+        let lines = html.split('\n');
+        let inList = false;
+        let processedLines = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+            if (line.startsWith('- ') || line.startsWith('* ')) {
+                if (!inList) {
+                    inList = true;
+                    processedLines.push('<ul>');
+                }
+                processedLines.push(`<li>${line.substring(2)}</li>`);
+            } else {
+                if (inList) {
+                    inList = false;
+                    processedLines.push('</ul>');
+                }
+                processedLines.push(line);
+            }
+        }
+        if (inList) processedLines.push('</ul>');
+
+        return processedLines.join('<br>');
+    }
+
+    function appendBotMessage(text, enableAudio = false, isGreeting = false, followUps = []) {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return;
+        const botBubble = document.createElement('div');
+        botBubble.style.cssText = "background: var(--bot-bubble-bg); color: var(--bot-bubble-text); padding: 10px 14px; border-radius: 12px 12px 12px 0; max-width: 88%; align-self: flex-start; border: 1px solid var(--bot-border); word-break: break-word; line-height: 1.5; display: flex; flex-direction: column; gap: 6px; position: relative;";
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = "bot-markdown-content";
+        contentDiv.innerHTML = parseMarkdownToHTML(text);
+        botBubble.appendChild(contentDiv);
+
+        // Footer Actions: TTS Audio + Emoji Reactions bar
+        const actionRow = document.createElement('div');
+        actionRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 4px;";
+
+        if (enableAudio && 'speechSynthesis' in window) {
+            const audioBtn = document.createElement('button');
+            audioBtn.innerHTML = "🔊 Read";
+            audioBtn.style.cssText = "background: none; border: none; color: #34d399; font-size: 10px; cursor: pointer; padding: 0;";
+            audioBtn.onclick = () => {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text.replace(/[*_#`-]/g, ''));
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            };
+            actionRow.appendChild(audioBtn);
+        } else {
+            actionRow.appendChild(document.createElement('span'));
+        }
+
+        // Emoji Reaction picker row inside bubble
+        const reactionDiv = document.createElement('div');
+        reactionDiv.style.cssText = "display: flex; gap: 4px; font-size: 11px;";
+        ['👍', '❤️', '💡'].forEach(emo => {
+            const emoBtn = document.createElement('button');
+            emoBtn.innerText = emo;
+            emoBtn.style.cssText = "background: none; border: none; cursor: pointer; opacity: 0.7; padding: 0 2px; transition: transform 0.2s;";
+            emoBtn.onclick = () => {
+                emoBtn.style.transform = "scale(1.3)";
+                setTimeout(() => emoBtn.style.transform = "scale(1.0)", 200);
+            };
+            reactionDiv.appendChild(emoBtn);
+        });
+        actionRow.appendChild(reactionDiv);
+        botBubble.appendChild(actionRow);
+
+        // Auto-Suggest Follow-up Chips Container if available
+        if (followUps && followUps.length > 0) {
+            const chipsContainer = document.createElement('div');
+            chipsContainer.style.cssText = "display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px;";
+            followUps.forEach(fText => {
+                const fBtn = document.createElement('button');
+                fBtn.innerText = fText;
+                fBtn.style.cssText = "background: var(--chip-bg); color: #34d399; border: 1px solid var(--bot-border); font-size: 9px; padding: 3px 8px; border-radius: 10px; cursor: pointer;";
+                fBtn.onclick = () => {
+                    const chatInput = document.getElementById('chatInput');
+                    if (chatInput) chatInput.value = fText;
+                    sendUserMessage();
+                };
+                chipsContainer.appendChild(fBtn);
+            });
+            botBubble.appendChild(chipsContainer);
+        }
+
+        chatMessages.appendChild(botBubble);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        saveCurrentSessionContent();
+    }
+
+    function generateAIBotResponse(rawQuery) {
+        const q = rawQuery.trim().toLowerCase();
+        
+        if (q.includes('salam') || q.includes('assalam')) {
+            return { text: "Walaikum Assalam!", followUps: ["What is 5 Marla cost?", "Check Cement Rate"] };
+        }
+        if (q.includes('hello') || q.includes('hi')) {
+            return { text: "Hello! How can I assist you today?", followUps: ["5 Marla Cost", "Steel Sariya Price"] };
+        }
+        if (q.includes('kaise ho') || q.includes('how are you')) {
+            return { text: "Alhamdulillah, main bilkul theek hoon! Aap batayein, kis project par kaam kar rahe hain?", followUps: ["House Construction Cost", "Labor Rates"] };
+        }
+        if (q.includes('bye') || q.includes('allah hafiz')) {
+            return { text: "Allah Hafiz! 👋 Phir milenge.", followUps: [] };
+        }
+        if (q.includes('thanks') || q.includes('shukriya')) {
+            return { text: "You're very welcome! 😊", followUps: [] };
+        }
+        
+        if (q.includes('5 marla') || q.includes('ghar') || q.includes('house')) {
+            return {
+                text: "🏢 **5 Marla House Estimation:**\n- Grey Structure & Finishing: **5 to 6 Crore PKR**\n- Required Cement Bags: ~1,150 bags\n- Estimated Steel Sariya: ~3.5 Tons",
+                followUps: ["What about 10 Marla?", "Current Cement Price?"]
+            };
+        }
+        if (q.includes('10 marla')) {
+            return {
+                text: "🏢 **10 Marla House Estimation:**\n- Total Cost (Grey + Finishing): **9 to 11 Crore PKR**\n- Covered Area: ~2,200 sq ft",
+                followUps: ["Labor Rates?", "Bricks Price?"]
+            };
+        }
+        if (q.includes('cement') || q.includes('bory')) {
+            return {
+                text: "🧱 **Cement Rate Update:**\n- Price per bag: **1,320 PKR**\n- Top brands include Fauji, Lucky, and Bestway.",
+                followUps: ["Steel Sariya Price?", "5 Marla Cost"]
+            };
+        }
+        if (q.includes('steel') || q.includes('sariya') || q.includes('iron')) {
+            return {
+                text: "⛓️ **Steel Sariya Rate:**\n- High-grade grade-60 sariya: **275,000 PKR** per ton.",
+                followUps: ["Cement Price?", "Labor Rates"]
+            };
+        }
+        if (q.includes('bricks') || q.includes('eent')) {
+            return {
+                text: "🧱 **Bricks (Eent) Price:**\n- Awwal quality bricks: **14 to 16 PKR** per piece.",
+                followUps: ["5 Marla Cost", "Labor Rates"]
+            };
+        }
+        if (q.includes('labor') || q.includes('mazdoor') || q.includes('theka')) {
+            return {
+                text: "👷‍♂️ **Labor Rates:**\n- Grey structure labor contract: **450 to 550 PKR** per square foot.",
+                followUps: ["Cement Price?", "Steel Sariya Price"]
+            };
+        }
+        
+        return {
+            text: "👍 Yeh ek behtareen sawal hai! Construction rates, material estimates ya kisi bhi aur project detail ke liye aap mazeed tafseel pooch sakte hain.",
+            followUps: ["5 Marla Cost", "Cement Price", "Steel Sariya"]
+        };
+    }
+</script>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-300">
+
+   <!-- NAVBAR (Theme + Language Switcher) -->
+    </nav>
+
+    <!-- MATERIAL PRICE RATE TICKER -->
+    <div class="bg-slate-900 border-b border-slate-800 py-2.5 overflow-hidden whitespace-nowrap text-xs text-primary font-medium">
+        <div class="inline-block animate-ticker">
+            <span class="mx-6">📢 <strong class="text-white">Live Market Rates (Pakistan):</strong></span>
+            <span class="mx-6">🧱 Cement (Per Bag): PKR 1,350 - 1,400</span>
+            <span class="mx-6">🏗️ Steel (Per Ton): PKR 275,000 - 285,000</span>
+            <span class="mx-6">🧱 Bricks (Awal Per 1,000): PKR 14,000 - 15,000</span>
+            <span class="mx-6">🟡 Sand (Ravi/Chenab Per CFT): PKR 45 - 55</span>
+        </div>
+    </div>
+
+    <!-- HERO SECTION WITH SLIDING BACKGROUND IMAGES -->
+    <section id="home" class="relative h-[80vh] flex items-center justify-center text-center overflow-hidden">
+        
+        <!-- Background Slider Container -->
+        <div class="absolute inset-0 z-0 hero-slider">
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80');"></div>
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80');"></div>
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80');"></div>
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80');"></div>
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1920&q=80');"></div>
+            <div class="slide absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1920&q=80');"></div>
+        </div>
+
+        <!-- Dark Gradient Overlay for Readability -->
+        <div class="absolute inset-0 bg-slate-950/70 z-1 pointer-events-none"></div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-3xl px-4">
+            <h1 class="text-4xl lg:text-5xl font-extrabold mb-4 text-white tracking-tight" data-i18n="hero_title">
+                Build Your Dream Home in Pakistan
+            </h1>
+            <p class="text-slate-300 text-base lg:text-lg mb-8 max-w-xl mx-auto" data-i18n="hero_subtitle">
+                Calculate accurate grey structure & finishing costs, view modern blueprints, and get instant material estimates.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#calculator" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-primary/30 transition transform hover:-translate-y-0.5" data-i18n="hero_btn">
+                    Calculate Cost Now
+                </a>
+                <a href="#designs" class="glass hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold transition" data-i18n="nav_designs">
+                    View Designs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CSS STYLES FOR TICKER & SLIDER ANIMATION -->
+    <style>
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+        .animate-ticker {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+        }
+        .animate-ticker:hover {
+            animation-play-state: paused;
+        }
+
+        /* Hero Slider Fade & Zoom Animation for 6 Images (36s Total Duration) */
+        .slide {
+            opacity: 0;
+            transform: scale(1);
+            animation: slideAnimation 36s infinite;
+        }
+        
+        .slide:nth-child(1) { animation-delay: 0s; }
+        .slide:nth-child(2) { animation-delay: 6s; }
+        .slide:nth-child(3) { animation-delay: 12s; }
+        .slide:nth-child(4) { animation-delay: 18s; }
+        .slide:nth-child(5) { animation-delay: 24s; }
+        .slide:nth-child(6) { animation-delay: 30s; }
+
+        @keyframes slideAnimation {
+            0% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            5% {
+                opacity: 1;
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            25% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+    </style>
+    
+    <nav class="sticky top-0 z-50 glass border-b border-slate-800 px-4 lg:px-12 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30">
+                P
+            </div>
+            <span class="text-xl font-bold tracking-tight text-white" data-i18n="brand_name">PakBuild<span class="text-primary">Pro</span></span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+            <a href="#home" class="hover:text-primary transition" data-i18n="nav_home">Home</a>
+            <a href="#calculator" class="hover:text-primary transition" data-i18n="nav_calculator">Calculator</a>
+            <a href="#blueprint" class="hover:text-primary transition" data-i18n="nav_blueprint">Floor Plan</a>
+            <a href="#designs" class="hover:text-primary transition" data-i18n="nav_designs">Home Designs</a>
+            <a href="#booking" class="hover:text-primary transition" data-i18n="nav_booking">Consultation</a>
+            <a href="#contact-section" data-i18n="nav_contact" style="color: #cbd5e1; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s;" onmouseover="this.style.color='#10b981'" onmouseout="this.style.color='#cbd5e1'">Contact</a>
+        </div>
+
+        <div class="flex items-center space-x-3">
+           <!-- Language Selector with Additional Languages -->
+<select id="langSelector" onchange="changeLanguage(this.value)" class="bg-slate-900 border border-slate-700 text-xs rounded-lg px-2.5 py-2 text-slate-200 focus:outline-none focus:border-primary">
+    <option value="en">English</option>
+    <option value="ur">اردو</option>
+    <option value="pa">پنجابی</option>
+    <option value="ps">پښتو</option>
+    <option value="ar">العربية</option>
+    <option value="sd">سنڌي</option>
+    <option value="fa">فارسی</option>
+</select>
+            <!-- Auth Buttons -->
+            <div id="authButtons" class="flex items-center space-x-2">
+                <a href="/pages/login.html" class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs font-medium text-slate-300 hover:border-primary hover:text-white transition">Login</a>
+                <a href="/pages/signup.html" class="px-3 py-2 rounded-lg bg-emerald-600 text-xs font-medium text-white hover:bg-emerald-700 transition">Sign Up</a>
+            </div>
+            <div id="userMenu" class="hidden flex items-center space-x-2">
+                <a href="/pages/dashboard.html" id="navUserName" class="text-xs text-slate-300 hover:text-white transition"></a>
+                <button onclick="navLogout()" class="text-xs text-red-400 hover:text-red-300 transition">Logout</button>
+            </div>
+            <!-- Theme Settings Toggle Button -->
+            <button onclick="toggleThemeModal()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-primary transition text-slate-200 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- THEME CUSTOMIZATION MODAL -->
+    <div id="themeModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass max-w-md w-full p-6 rounded-2xl shadow-2xl border border-slate-700 space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white" data-i18n="theme_settings">Theme Settings</h3>
+                <button onclick="toggleThemeModal()" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3" data-i18n="accent_color">Accent Color</label>
+                <div class="flex space-x-3">
+                    <button onclick="setThemeColor('#059669', '#047857')" class="w-8 h-8 rounded-full bg-emerald-600 ring-2 ring-white/20 hover:scale-110 transition"></button>
+                    <button onclick="setThemeColor('#2563eb', '#1d4ed8')" class="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-white/20 hover:scale-110 transition"></button>
+                    <button onclick="setThemeColor('#d97706', '#b45309')" class="w-8 h-8 rounded-full bg-amber-600 ring-2 ring-white/20 hover:scale-110 transition"></button>
+                    <button onclick="setThemeColor('#475569', '#334155')" class="w-8 h-8 rounded-full bg-slate-600 ring-2 ring-white/20 hover:scale-110 transition"></button>
+                    <button onclick="setThemeColor('#9333ea', '#7e22ce')" class="w-8 h-8 rounded-full bg-purple-600 ring-2 ring-white/20 hover:scale-110 transition"></button>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3" data-i18n="display_mode">Display Mode</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="setMode('dark')" class="py-2.5 px-4 rounded-xl bg-slate-900 border border-slate-700 text-xs font-medium text-center hover:border-primary transition" data-i18n="dark_mode">Dark Mode</button>
+                    <button onclick="setMode('light')" class="py-2.5 px-4 rounded-xl bg-slate-100 border border-slate-300 text-xs font-medium text-center text-slate-900 hover:border-primary transition" data-i18n="light_mode">Light Mode</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <header id="home" class="relative overflow-hidden py-16 lg:py-24 px-4 text-center">
+        <div class="max-w-4xl mx-auto space-y-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20" data-i18n="badge_text">
+                ✨ Pakistan's #1 Construction Estimator & Design Gallery
+            </span>
+            <h1 class="text-4xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight" data-i18n="hero_title">
+                Build Your Dream Home With Complete Financial Clarity
+            </h1>
+            <p class="text-base lg:text-lg text-slate-400 max-w-2xl mx-auto" data-i18n="hero_subtitle">
+                Accurate grey structure costs, finishing estimates, material breakdowns, architectural floor plans, and stunning Pakistani home design galleries.
+            </p>
+        </div>
+    </header>
+
+    <!-- CALCULATOR SECTION -->
+    <section id="calculator" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Input Form Controls -->
+            <div class="lg:col-span-5 glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+                <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+                    <span data-i18n="calc_heading">Project Parameters</span>
+                </h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2" data-i18n="plot_size_label">Plot Size</label>
+                        <select id="plotSize" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-primary">
+                            <option value="3">3 Marla (675 sq.ft)</option>
+                            <option value="5" selected>5 Marla (1,125 sq.ft)</option>
+                            <option value="10">10 Marla (2,250 sq.ft)</option>
+                            <option value="20">1 Kanal (4,500 sq.ft)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2" data-i18n="construction_type_label">Construction Quality</label>
+                        <select id="constructionType" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-primary">
+                            <option value="grey">Grey Structure Only</option>
+                            <option value="a_category" selected>A-Category (Standard Turnkey)</option>
+                            <option value="premium">Premium Luxury Finishing</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2" data-i18n="city_label">City Location</label>
+                        <select id="city" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-primary">
+                            <option value="lahore">Lahore</option>
+                            <option value="karachi">Karachi</option>
+                            <option value="islamabad">Islamabad</option>
+                            <option value="rawalpindi">Rawalpindi</option>
+                            <option value="faisalabad">Faisalabad</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2" data-i18n="floors_label">Number of Floors</label>
+                        <select id="floors" class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-primary">
+                            <option value="1">Single Story</option>
+                            <option value="2" selected>Double Story</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="calculateCost()" class="w-full py-4 rounded-xl bg-primary hover:bg-primaryHover text-white font-semibold shadow-lg shadow-primary/30 transition transform active:scale-95" data-i18n="calculate_btn">
+                    Calculate Estimate
+                </button>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Cost Breakdown Card -->
+                <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+                    <h3 class="text-lg font-bold text-white" data-i18n="cost_breakdown_title">Estimated Financial Breakdown</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-2xl">
+                            <span class="text-xs text-slate-400 block mb-1" data-i18n="total_cost">Total Cost</span>
+                            <span id="resTotal" class="text-xl lg:text-2xl font-extrabold text-primary">PKR 0</span>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-2xl">
+                            <span class="text-xs text-slate-400 block mb-1" data-i18n="grey_cost">Grey Structure</span>
+                            <span id="resGrey" class="text-lg lg:text-xl font-bold text-white">PKR 0</span>
+                        </div>
+                        <div class="bg-slate-900/40 border border-slate-800 p-4 rounded-2xl">
+                            <span class="text-xs text-slate-400 block mb-1" data-i18n="finishing_cost">Finishing Cost</span>
+                            <span id="resFinishing" class="text-lg lg:text-xl font-bold text-white">PKR 0</span>
+                        </div>
+                    </div>
+                    <!-- Material Price Trend Indicator Section -->
+<div class="max-w-7xl mx-auto px-4 my-8">
+    <div class="text-center mb-6">
+        <h3 class="text-xl font-bold text-white flex items-center justify-center space-x-2">
+            <span>📈 Live Pakistan Construction Material Trends (This Week)</span>
+        </h3>
+        <p class="text-slate-400 text-xs mt-1">Real-time market fluctuation tracker across Lahore, Karachi & Islamabad.</p>
+    </div>
+
+    <!-- Trend Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Steel Trend Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start">
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Steel (Sariya / Ton)</span>
+                    <h4 class="text-2xl font-black text-white mt-1">PKR 275,000</h4>
+                </div>
+                <!-- Status Badge (Up / Down) -->
+                <span class="bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                    <span>▲ +2.4%</span>
+                </span>
+            </div>
+            <p class="text-slate-500 text-xs mt-4">Demand spike in commercial projects pushed prices higher.</p>
+        </div>
+
+        <!-- Cement Trend Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start">
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Cement (Per Bag)</span>
+                    <h4 class="text-2xl font-black text-white mt-1">PKR 1,320</h4>
+                </div>
+                <!-- Status Badge -->
+                <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                    <span>▼ -0.8%</span>
+                </span>
+            </div>
+            <p class="text-slate-500 text-xs mt-4">Slight stabilization due to regular supply chain flow.</p>
+        </div>
+
+        <!-- Bricks Trend Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start">
+                <div>
+                    <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Awal Bricks (Per 1000)</span>
+                    <h4 class="text-2xl font-black text-white mt-1">PKR 16,500</h4>
+                </div>
+                <!-- Status Badge -->
+                <span class="bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                    <span>▲ +1.5%</span>
+                </span>
+            </div>
+            <p class="text-slate-500 text-xs mt-4">Increased fuel and transportation costs impact kiln rates.</p>
+        </div>
+
+    </div>
+</div>
+
+                    <!-- Material Requirements -->
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-semibold text-slate-300 uppercase tracking-wider" data-i18n="material_requirements">Raw Material Estimate</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                            <div class="bg-slate-900/30 p-3 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 block" data-i18n="cement">Cement Bags</span>
+                                <span id="matCement" class="text-base font-bold text-white">0</span>
+                            </div>
+                            <div class="bg-slate-900/30 p-3 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 block" data-i18n="steel">Steel (Tons)</span>
+                                <span id="matSteel" class="text-base font-bold text-white">0</span>
+                            </div>
+                            <div class="bg-slate-900/30 p-3 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 block" data-i18n="bricks">Bricks</span>
+                                <span id="matBricks" class="text-base font-bold text-white">0</span>
+                            </div>
+                            <div class="bg-slate-900/30 p-3 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 block" data-i18n="sand">Sand (CFT)</span>
+                                <span id="matSand" class="text-base font-bold text-white">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Export Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <button onclick="downloadPDF()" class="flex-1 py-3 px-4 rounded-xl bg-slate-900 border border-slate-700 hover:border-primary text-xs font-semibold text-white transition flex items-center justify-center space-x-2">
+                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span data-i18n="download_pdf">Download PDF Report</span>
+                        </button>
+                        <button onclick="openWhatsApp()" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold text-white transition flex items-center justify-center space-x-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            <span data-i18n="whatsapp_btn">Connect on WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISUAL FLOOR PLAN GENERATOR SECTION -->
+    <section id="blueprint" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white" data-i18n="floor_plan_title">Interactive 2D Blueprint Layout</h3>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="floor_plan_subtitle">Dynamically generated architectural layout based on selected plot size.</p>
+                </div>
+                <div id="plotSizeIndicator" class="px-3 py-1 bg-primary/10 border border-primary/20 text-primary text-xs font-semibold rounded-lg">
+                    5 Marla Layout
+                </div>
+            </div>
+
+            <!-- SVG Blueprint Render Area -->
+            <div class="w-full bg-slate-900/80 border border-slate-800 rounded-2xl p-4 flex items-center justify-center overflow-x-auto min-h-[350px]">
+                <div id="svgContainer" class="w-full max-w-2xl">
+                    <!-- SVG injected via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW FEATURE: HOUSE DESIGN & ELEVATION GALLERY SECTION -->
+    <section id="designs" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white" data-i18n="design_gallery_title">Pakistani Home Design & Elevation Gallery</h3>
+                    <p class="text-xs text-slate-400 mt-1" data-i18n="design_gallery_subtitle">Explore modern front elevations, contemporary interiors, and traditional styles.</p>
+                </div>
+                <!-- Style Filter Buttons -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterDesigns('all')" id="filter-all" class="px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold transition" data-i18n="filter_all">All Styles</button>
+                    <button onclick="filterDesigns('modern')" id="filter-modern" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold hover:border-primary transition" data-i18n="filter_modern">Modern Luxury</button>
+                    <button onclick="filterDesigns('traditional')" id="filter-traditional" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold hover:border-primary transition" data-i18n="filter_traditional">Classic Pakistani</button>
+                    <button onclick="filterDesigns('minimalist')" id="filter-minimalist" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold hover:border-primary transition" data-i18n="filter_minimalist">Minimalist Ashlar</button>
+                </div>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div id="designGalleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+                <!-- Dynamically populated or static high-end design cards -->
+            </div>
+        </div>
+    </section>
+
+    <!-- BOOKING CALENDAR SECTION -->
+    <section id="booking" class="max-w-7xl mx-auto px-4 py-8 mb-16">
+        <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+            <div class="text-center max-w-xl mx-auto">
+                <h3 class="text-xl font-bold text-white" data-i18n="booking_title">Book a Free Expert Consultation</h3>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="booking_subtitle">Schedule a 1-on-1 session with our senior architects and cost estimators.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <!-- Calendar Widget -->
+                <div class="bg-slate-900/40 border border-slate-800 p-5 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span id="currentMonthYear" class="text-sm font-bold text-white">July 2026</span>
+                        <div class="flex space-x-2">
+                            <button onclick="changeMonth(-1)" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">&lt;</button>
+                            <button onclick="changeMonth(1)" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white">&gt;</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400">
+                        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                    </div>
+                    <div id="calendarDays" class="grid grid-cols-7 gap-1 text-center text-xs">
+                        <!-- Days populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Time Slots & Confirmation -->
+                <div class="bg-slate-900/40 border border-slate-800 p-5 rounded-2xl flex flex-col justify-between space-y-4">
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-3" data-i18n="select_slot">Available Time Slots</span>
+                        <div id="timeSlots" class="grid grid-cols-2 gap-2">
+                            <button onclick="selectSlot(this)" class="py-2.5 px-3 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:border-primary border border-transparent transition">10:00 AM</button>
+                            <button onclick="selectSlot(this)" class="py-2.5 px-3 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:border-primary border border-transparent transition">12:00 PM</button>
+                            <button onclick="selectSlot(this)" class="py-2.5 px-3 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:border-primary border border-transparent transition">03:00 PM</button>
+                            <button onclick="selectSlot(this)" class="py-2.5 px-3 rounded-xl bg-slate-800 text-xs font-medium text-slate-300 hover:border-primary border border-transparent transition">05:00 PM</button>
+                        </div>
+                    </div>
+                    <button onclick="confirmBooking()" class="w-full py-3 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition shadow-md" data-i18n="confirm_booking_btn">
+                        Confirm Appointment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUCCESS TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 glass bg-slate-900/90 border border-primary text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center space-x-3">
+        <div class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></div>
+        <span id="toastMsg" class="text-xs font-medium">Notification message</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+       // --- TRANSLATIONS OBJECT ---
+const translations = {
+    en: {
+        brand_name: "PakBuild",
+        nav_home: "Home",
+        nav_calculator: "Calculator",
+        nav_blueprint: "Floor Plan",
+        nav_designs: "Home Designs",
+        nav_booking: "Consultation",
+        theme_settings: "Theme Settings",
+        accent_color: "Accent Color",
+        display_mode: "Display Mode",
+        dark_mode: "Dark Mode",
+        light_mode: "Light Mode",
+        badge_text: "✨ Pakistan's #1 Construction Estimator & Design Gallery",
+        hero_title: "Build Your Dream Home With Complete Financial Clarity",
+        hero_subtitle: "Accurate grey structure costs, finishing estimates, material breakdowns, architectural floor plans, and stunning Pakistani home design galleries.",
+        calc_heading: "Project Parameters",
+        plot_size_label: "Plot Size",
+        construction_type_label: "Construction Quality",
+        city_label: "City Location",
+        floors_label: "Number of Floors",
+        calculate_btn: "Calculate Estimate",
+        cost_breakdown_title: "Estimated Financial Breakdown",
+        total_cost: "Total Cost",
+        grey_cost: "Grey Structure",
+        finishing_cost: "Finishing Cost",
+        material_requirements: "Raw Material Estimate",
+        cement: "Cement Bags",
+        steel: "Steel (Tons)",
+        bricks: "Bricks",
+        sand: "Sand (CFT)",
+        download_pdf: "Download PDF Report",
+        whatsapp_btn: "Connect on WhatsApp",
+        floor_plan_title: "Interactive 2D Blueprint Layout",
+        floor_plan_subtitle: "Dynamically generated architectural layout based on selected plot size.",
+        design_gallery_title: "Pakistani Home Design & Elevation Gallery",
+        design_gallery_subtitle: "Explore modern front elevations, contemporary interiors, and traditional styles.",
+        filter_all: "All Styles",
+        filter_modern: "Modern Luxury",
+        filter_traditional: "Classic Pakistani",
+        filter_minimalist: "Minimalist Ashlar",
+        booking_title: "Book a Free Expert Consultation",
+        booking_subtitle: "Schedule a 1-on-1 session with our senior architects and cost estimators.",
+        select_slot: "Available Time Slots",
+        confirm_booking_btn: "Confirm Appointment",
+        nav_contact: "Contact",
+        contact_title: "Get in Touch",
+        contact_subtitle: "Have questions or want to collaborate? Send a message below!",
+        contact_firstname: "First Name",
+        contact_lastname: "Last Name",
+        contact_email: "Email Address",
+        contact_message: "Message",
+        contact_send_btn: "Send Message",
+        testimonial_title: "What Our Clients Say",
+testimonial_subtitle: "Trusted by hundreds of homeowners across Pakistan",
+review_1: "\"PakBuild's cost calculator was amazingly accurate for my 5-marla grey structure in Lahore. Saved me from unexpected budget surprises!\"",
+client_1_loc: "Lahore",
+review_2: "\"The floor plans and material estimations gave me complete clarity before hiring a contractor. Highly recommended for anyone building a home.\"",
+client_2_loc: "Islamabad",
+review_3: "\"Very clean interface and multi-language support made it super easy for my father to understand the estimates in Urdu. Great job!\"",
+client_3_loc: "Karachi",
+// English (en)
+faq_title: "Frequently Asked Questions",
+faq_subtitle: "Got questions about home construction in Pakistan? Find answers here.",
+faq_q1: "How long does it take to build a 5 Marla house grey structure?",
+faq_a1: "Typically, a standard 5-marla grey structure takes around 3 to 4 months to complete, depending on labor availability and weather conditions.",
+faq_q2: "What is included in the Grey Structure cost?",
+faq_a2: "Grey structure includes earthwork, foundation, brick masonry, R.C.C work, plaster, underground water tanks, and basic piping.",
+faq_q3: "How accurate are these cost estimates?",
+faq_a3: "Our estimates are based on real-time average market rates across major Pakistani cities.",
+    },
+    ur: {
+        brand_name: "پاک بلڈ",
+        nav_home: "ہوم",
+        nav_calculator: "کیلکولیٹر",
+        nav_blueprint: "نقشہ",
+        nav_designs: "گھر کے ڈیزائن",
+        nav_booking: "مشاورت",
+        theme_settings: "تھیم کی ترتیبات",
+        accent_color: "مرکزی رنگ",
+        display_mode: "ڈسپلے موڈ",
+        dark_mode: "ڈارک موڈ",
+        light_mode: "لائٹ موڈ",
+        badge_text: "✨ پاکستان کا بہترین تعمیراتی تخمینہ کار اور ڈیزائن گیلری",
+        hero_title: "مکمل مالیاتی وضاحت کے ساتھ اپنا خوابوں کا گھر بنائیں",
+        hero_subtitle: "پاکستانی رئیل اسٹیٹ مارکیٹ کے مطابق گرے اسٹرکچر لاگت، فنشنگ، اور مواد کا تخمینہ۔",
+        calc_heading: "پروجیکٹ کی تفصیلات",
+        plot_size_label: "پلاٹ کا سائز",
+        construction_type_label: "تعمیر کا معیار",
+        city_label: "شہر کا انتخاب",
+        floors_label: "منزلوں کی تعداد",
+        calculate_btn: "تخمینہ لگائیں",
+        cost_breakdown_title: "تخمینہ شدہ مالیاتی تفصیل",
+        total_cost: "کل لاگت",
+        grey_cost: "گرے اسٹرکچر",
+        finishing_cost: "فنشنگ لاگت",
+        material_requirements: "خام مال کا تخمینہ",
+        cement: "سیمنٹ تھیلے",
+        steel: "سٹیل (ٹن)",
+        bricks: "اینٹیں",
+        sand: "ریت (سی ایف ٹی)",
+        download_pdf: "پی ڈی ایف رپورٹ ڈاؤن لوڈ کریں",
+        whatsapp_btn: "واٹس ایپ پر رابطہ کریں",
+        floor_plan_title: "انٹرایکٹو 2D بلیو پرنٹ لے آؤٹ",
+        floor_plan_subtitle: "منتخب پلاٹ سائز کی بنیاد پر تیار کردہ آرکیٹیکچرل لے آؤٹ۔",
+        design_gallery_title: "پاکستانی گھر کے ڈیزائن اور ایلیویشن گیلری",
+        design_gallery_subtitle: "جدید فرنٹس، اندرونی حصے اور روایتی طرز کے ڈیزائن دیکھیں۔",
+        filter_all: "تمام انداز",
+        filter_modern: "جدید لگژری",
+        filter_traditional: "کلاسیکی پاکستانی",
+        filter_minimalist: "منیملسٹ ایشلر",
+        booking_title: "مفت ماہر مشاورت بک کریں",
+        booking_subtitle: "ہمارے سینئر آرکیٹیکٹس کے ساتھ سیشن طے کریں۔",
+        select_slot: "دستیاب اوقات",
+        confirm_booking_btn: "تقرری کی تصدیق کریں",
+        nav_contact: "رابطہ",
+        contact_title: "رابطہ کریں",
+        contact_subtitle: "کوئی سوال ہے یا تعاون کرنا چاہتے ہیں؟ نیچے پیغام بھیجیں!",
+        contact_firstname: "پہلا نام",
+        contact_lastname: "آخری نام",
+        contact_email: "ای میل ایڈریس",
+        contact_message: "پیغام",
+        contact_send_btn: "پیغام بھیجیں",
+        testimonial_title: "ہمارے صارفین کی رائے",
+testimonial_subtitle: "پورے پاکستان کے سیکڑوں گھر مالکان کا اعتماد",
+review_1: "\"لاہور میں میرے 5 مرلہ گرے اسٹرکچر کے لیے پاک بلڈ کا لاگت کیلکولیٹر حیرت انگیز طور پر درست تھا۔ غیر متوقع اخراجات سے بچت ہو گئی!\"",
+client_1_loc: "لاہور",
+review_2: "\"ٹھیکیدار کی خدمات حاصل کرنے سے پہلے نقشے اور مواد کے تخمینے نے مجھے مکمل وضاحت فراہم کی۔ گھر بنانے والے ہر شخص کے لیے زبردست۔\"",
+client_2_loc: "اسلام آباد",
+review_3: "\"بہت صاف ستھرا انٹرفیس اور کثیر لسانی سپورٹ نے میرے والد کے لیے اردو میں تخمینے سمجھنا انتہائی آسان بنا دیا۔ زبردست کام!\"",
+client_2_loc: "کراچی",
+// Urdu (ur)
+faq_title: "अمومي سوالات (FAQ)",
+faq_subtitle: "پاکستان میں گھر کی تعمیر کے بارے میں سوالات؟ یہاں جوابات پائیں۔",
+faq_q1: "5 مرلہ گھر کا گرے اسٹرکچر بنانے میں کتنا وقت لگتا ہے؟",
+faq_a1: "عام طور پر 5 مرلہ کا گرے اسٹرکچر مکمل ہونے میں 3 سے 4 مہینے لگتے ہیں، جو مزدوروں اور موسم پر منحصر ہے۔",
+faq_q2: "گرے اسٹرکچر کی لاگت میں کیا کیا شامل ہوتا ہے؟",
+faq_a2: "گرے اسٹرکچر میں بنیاد، اینٹوں کا کام، چھتیں، پلستر، اور پانی کی ٹینک سمیت بنیادی پائپنگ شامل ہوتی ہے۔",
+faq_q3: "یہ لاگت کے تخمینے کتنے درست ہیں؟",
+faq_a3: "ہمارے تخمینے پاکستان کے بڑے شہروں کی موجودہ مارکیٹ قیمتوں پر مبنی ہیں۔"
+    },
+    pa: {
+        brand_name: "پاک بلڈ",
+        nav_home: "مکھ صفحہ",
+        nav_calculator: "کیلکولیٹر",
+        nav_blueprint: "نقشہ",
+        nav_designs: "گھر دے ڈیزائن",
+        nav_booking: "مشاورت",
+        theme_settings: "تھیم سیٹنگز",
+        accent_color: "رنگ",
+        display_mode: "موڈ",
+        dark_mode: "ڈارک موڈ",
+        light_mode: "لائٹ موڈ",
+        badge_text: "✨ پاکستان دا نمبر ون کنسٹرکشن کاسٹ کیلکولیٹر تے ڈیزائن گیلری",
+        hero_title: "اپنا سپنیاں دا گھر مکمل وضاحت نال بناؤ",
+        hero_subtitle: "گرے اسٹرکچر تے مٹیریل دا درست تخمینہ۔",
+        calc_heading: "پروجیکٹ دی تفصیل",
+        plot_size_label: "پلاٹ سائز",
+        construction_type_label: "تعمیر دا معیار",
+        city_label: "شہر",
+        floors_label: "منزلاں",
+        calculate_btn: "حساب لاؤ",
+        cost_breakdown_title: "خرچے دی تفصیل",
+        total_cost: "کل خرچہ",
+        grey_cost: "گرے اسٹرکچر",
+        finishing_cost: "فنشنگ خرچہ",
+        material_requirements: "مٹیریل تخمینہ",
+        cement: "سیمنٹ دیاں بوری",
+        steel: "سٹیل (ٹن)",
+        bricks: "اینٹاں",
+        sand: "ریت",
+        download_pdf: "پی ڈی ایف ڈاؤن لوڈ کرو",
+        whatsapp_btn: "واٹس ایپ تے رابطہ کرو",
+        floor_plan_title: "نقشہ لے آؤٹ",
+        floor_plan_subtitle: "پلاٹ سائز دے مطابق نقشہ۔",
+        design_gallery_title: "گھر دے ڈیزائن گیلری",
+        design_gallery_subtitle: "شاندار فرنٹ ایلیویشن تے اندرونی ڈیزائن دیکھو۔",
+        filter_all: "سارے",
+        filter_modern: "ماڈرن لگژری",
+        filter_traditional: "روایتی",
+        filter_minimalist: "منیملسٹ",
+        booking_title: "مفت مشاورت بک کرو",
+        booking_subtitle: "ماہرین نال گل کرو۔",
+        select_slot: "وقت چنو",
+        confirm_booking_btn: "بکنگ پکی کرو",
+        nav_contact: "رابطہ",
+        contact_title: "رابطہ کرو",
+        contact_subtitle: "کوئی سوال اے یا تعاون کرنا چاہندے او؟ تھلے پیغام بھیجو!",
+        contact_firstname: "پہلا ناں",
+        contact_lastname: "آخری ناں",
+        contact_email: "ای میل ایڈریس",
+        contact_message: "پیغام",
+        contact_send_btn: "پیغام بھیجو",
+
+        // --- PUNJABI (pa) ---
+testimonial_title: "साਡੇ گاہکاں دی رائے",
+testimonial_subtitle: "پورے پاکستان دے سیکڑاں گھر مالکان دا اعتماد",
+review_1: "\"لاہور وچ میرے 5 مرلے دے گرے اسٹرکچر لئی پاک بلڈ دا کیلکولیٹر بالکل سہی سی۔ پچھوں ہون والے وادھو خرچیاں توں بچت ہو گئی!\"",
+client_1_loc: "لاہور",
+review_2: "\"نقشے تے میٹریل دے تخمینے نے مینوں کم شروع کرن توں پہلاں مکمل وضاحت دتی۔ گھر بنان والے ہر بندے لئی زبردست!\"",
+client_2_loc: "اسلام آباد",
+review_3: "\"بہت صاف ستھرا انٹرفیس تے ملٹی لینگویج سپورٹ نے میرے والد لئی اردو/پنجابی وچ سمجھنا بہت سوکھا کر دتا۔\"",
+client_3_loc: "کراچی",
+// --- PUNJABI (pa) ---
+faq_title: "عام سوالات (FAQ)",
+faq_subtitle: "پاکستان وچ گھر دی تعمیر بارے کوئی سوال؟ اتھے جواب لڀو۔",
+faq_q1: "5 مرلے دا گرے اسٹرکچر بنان وچ کتنا ٹائم لگدا اے؟",
+faq_a1: "عام طور تے 5 مرلے دا گرے اسٹرکچر مکمل ہون وچ 3 توں 4 مہینے لگ جاندے نیں، جو مزدوراں تے موسم دی دستیابی اُتے منحصر اے۔",
+faq_q2: "گرے اسٹرکچر دے خرچے وچ کیہڑے کم شامل ہوندے نیں؟",
+faq_a2: "گرے اسٹرکچر وچ بنیاد، اینٹاں دا کم، چھتیں، پلستر، زمین تھلے پانی دی ٹینکی تے بنیادی پائپنگ شامل ہندی اے۔",
+faq_q3: "ایہہ خرچے دا تخمینہ کتنا سچا یا درست اے؟",
+faq_a3: "ساڈا تخمینہ پاکستان دے وڈے شہروں دیاں موجودہ مارکیٹ قیمتاں دے حساب نال بنایا گیا اے۔",
+
+    },
+    ps: {
+        brand_name: "پاک بلڈ",
+        nav_home: "کور",
+        nav_calculator: "محسابه",
+        nav_blueprint: "نقشه",
+        nav_designs: "د کور ډیزاینونه",
+        nav_booking: "مشاوره",
+        theme_settings: "تنظیمات",
+        accent_color: "رنگ",
+        display_mode: "د ښودلو اډه",
+        dark_mode: "تور اډه",
+        light_mode: "روښانه اډه",
+        badge_text: "✨ د پاکستان تر ټولو غوره د ودانۍ لګښت او ډیزاین ګالری",
+        hero_title: "خپل د خوب کور په پوره مالی روښانتیا سره جوړ کړئ",
+        hero_subtitle: "د خړ جوړښت او موادو دقیق اټکل.",
+        calc_heading: "د پروژې تفصیل",
+        plot_size_label: "د ځمکې اندازه",
+        construction_type_label: "د جوړولو کیفیت",
+        city_label: "ښار",
+        floors_label: "پوړونه",
+        calculate_btn: "لګښت حساب کړئ",
+        cost_breakdown_title: "د لګښت تفصيلي برخه",
+        total_cost: "ټول لګښت",
+        grey_cost: "خړ جوړښت",
+        finishing_cost: "د پای لګښت",
+        material_requirements: "د خامو موادو اټکل",
+        cement: "سیمنټ کڅوړې",
+        steel: "پوپلاد (ټن)",
+        bricks: "خښتې",
+        sand: "شګه",
+        download_pdf: "ډاونلوډ PDF راپور",
+        whatsapp_btn: "په واټس اپ اړیکه ونیسئ",
+        floor_plan_title: "د پوړ نقشه",
+        floor_plan_subtitle: "د ځمکې اندازې پر بنسټ جوړ شوی نقشه.",
+        design_gallery_title: "د کور ډیزاین او مخکینۍ نما ګالري",
+        design_gallery_subtitle: "عصري مخونه او داخلي ډیزاینونه وپلټئ.",
+        filter_all: "ټول",
+        filter_modern: "عصري شاندار",
+        filter_traditional: "کلاسیک پاکستانی",
+        filter_minimalist: "ساده او عصري",
+        booking_title: "وړیا مشوره کتاب کړئ",
+        booking_subtitle: "زموږ له متخصصینو سره وخت تنظیم کړئ.",
+        select_slot: "وخت وټاکئ",
+        confirm_booking_btn: "تایید کړئ",
+        nav_contact: "اړیکه",
+        contact_title: "موږ سره اړیکه ونیسئ",
+        contact_subtitle: "پوښتنه لرئ او که غواړئ همکاري وکړئ؟ لاندې پیغام ولیکئ!",
+        contact_firstname: "لومړی نوم",
+        contact_lastname: "تخلص",
+        contact_email: "برېښنالیک پته",
+        contact_message: "پیغام",
+        contact_send_btn: "پیغام ولولیږئ",
+        // --- PASHTO (ps) ---
+testimonial_title: "زموږ د پیرودونکو نظرونه",
+testimonial_subtitle: "په ټول پاکستان کې د سلګونو کور خاوندانو لخوا باوري",
+review_1: "\"په لاهور کې زما د ۵ مرلو خړ جوړښت لپاره د پاک بلډ د لګښت محاسبه کونکي ډیر دقیق اټکل وکړ. له غیر متوقع لګښتونو وژغوریدم!\"",
+client_1_loc: "لاهور",
+review_2: "\"نقشې او د موادو اټکلونو مخکې له دې چې قراردادي وګمارم، بشپړ وضاحت راکړ. د هر هغه چا لپاره چې کور جوړوي ډیر سپارښتنه کیږي.\"",
+client_2_loc: "اسلام آباد",
+review_3: "\"ډیر پاک انٹرفیس او څو ژبنی ملاتړ زما پلار ته اسانه کړه چې اټکلونه په خپله ژبه پوه شي. ډیره ښه کاري\"",
+client_3_loc: "کراچۍ",
+// --- PASHTO (ps) ---
+faq_title: "عام پوښتنې",
+faq_subtitle: "په پاکستان کې د کور جوړولو په اړه پوښتنې لرئ؟ دلته ځوابونه ومومئ.",
+faq_q1: "د 5 مرلو کور خړ جوړښت په جوړولو کې څومره وخت نیسي؟",
+faq_a1: "عموماً د 5 مرلو خړ جوړښت بشپړولو لپاره شاوخوا 3 تر 4 میاشتو وخت نیسي, چې د کارګرانو او هوا حالت پورې اړه لري.",
+faq_q2: "د خړ جوړښت په لګښت کې څه شی شامل دي؟",
+faq_a2: "خړ جوړښت کې بنسټ, د خښتو دیوالونه, چتونه, پلستر, د اوبو لاندې ټانکونه او اساسي پائپونه شامل دي.",
+faq_q3: "دا د لګښت اټکل څومره دقیق دی؟",
+faq_a3: "زموږ اټکلونه د پاکستان په لویو ښارونو کې د اوسني بازار اوسط نرخونو پر بنسټ دي.",
+    },
+    ar: {
+        brand_name: "باك بيلد",
+        nav_home: "الرئيسية",
+        nav_calculator: "الحاسبة",
+        nav_blueprint: "المخطط",
+        nav_designs: "تصاميم المنازل",
+        nav_booking: "الاستشارة",
+        theme_settings: "إعدادات المظهر",
+        accent_color: "لون التمييز",
+        display_mode: "وضع العرض",
+        dark_mode: "الوضع الداكن",
+        light_mode: "الوضع الفاتح",
+        badge_text: "✨ أفضل مقدِّم تقديرات البناء ومعرض التصاميم في باكستان",
+        hero_title: "ابنِ منزل أحلامك مع توضيح ماليزي دقيق",
+        hero_subtitle: "تقدير تكلفة هيكل الطابوق، التشطيبات، والمواد وفقاً لسوق العقارات الباكستاني.",
+        calc_heading: "تفاصيل المشروع",
+        plot_size_label: "حجم القطعة",
+        construction_type_label: "معيار البناء",
+        city_label: "اختيار المدينة",
+        floors_label: "عدد الطوابق",
+        calculate_btn: "حساب التقدير",
+        cost_breakdown_title: "التفصيل المالي التقديري",
+        total_cost: "التكلفة الإجمالية",
+        grey_cost: "الهيكل العظمي",
+        finishing_cost: "تكلفة التشطيب",
+        material_requirements: "تقدير المواد الخام",
+        cement: "أكياس الأسمنت",
+        steel: "الحديد (أطنان)",
+        bricks: "الطابوق / الطوب",
+        sand: "الرمل (قدم مكعب)",
+        download_pdf: "تحميل تقرير PDF",
+        whatsapp_btn: "تواصل عبر واتساب",
+        floor_plan_title: "مخطط تفاعلي ثنائي الأبعاد",
+        floor_plan_subtitle: "مخطط معماري يتم إنشاؤه بناءً على حجم القطعة المختارة.",
+        design_gallery_title: "معرض تصاميم وواجهات المنازل الباكستانية",
+        design_gallery_subtitle: "استعرض الواجهات الحديثة، التصاميم الداخلية، والأنماط التقليدية.",
+        filter_all: "جميع الأنماط",
+        filter_modern: "فاخر حديث",
+        filter_traditional: "كلاسيكي باكستاني",
+        filter_minimalist: "مينيمليست",
+        booking_title: "احجز استشارة مجانية مع خبير",
+        booking_subtitle: "حدد موعداً لجلسة مع كبار المهندسين المعماريين.",
+        select_slot: "الأوقات المتاحة",
+        confirm_booking_btn: "تأكيد الموعد",
+        nav_contact: "اتصل بنا",
+        contact_title: "ابقى على تواصل",
+        contact_subtitle: "هل لديك أسئلة أو تريد التعاون؟ أرسل رسالة أدناه!",
+        contact_firstname: "الاسم الأول",
+        contact_lastname: "اسم العائلة",
+        contact_email: "عنوان البريد الإلكتروني",
+        contact_message: "الرسالة",
+        contact_send_btn: "إرسال الرسالة",
+        // --- ARABIC (ar) -->
+testimonial_title: "آراء عملائنا",
+testimonial_subtitle: "موثوق به من قبل مئات أصحاب المنازل في جميع أنحاء باكستان",
+review_1: "\"كان حاسبة التكاليف في باك بيلد دقيقة بشكل مذهل لهيكلي العظمي بمساحة 5 مرلات في لاهور. أنقذني من مفاجآت الميزانية غير المتوقعة!\"",
+client_1_loc: "لاهور",
+review_2: "\"منحتني المخططات وتكوين المواد وضوحاً كاملاً قبل توظيف المقاول. يوصى به بشدة لكل من يبني منزلاً.\"",
+client_2_loc: "إسلام آباد",
+review_3: "\"واجهة نظيفة للغاية ودعم متعدد اللغات جعل من السهل جداً على والدي فهم التقديرات. عمل رائع!\"",
+client_3_loc: "كراتشي",
+// --- ARABIC (ar) ---
+faq_title: "الأسئلة الشائعة",
+faq_subtitle: "هل لديك أسئلة حول بناء المنازل في باكستان؟ اعثر على الإجابات هنا.",
+faq_q1: "كم يستغرق بناء الهيكل العظمي لمنزل مساحته 5 مرلات؟",
+faq_a1: "عادةً، يستغرق الهيكل العظمي القياسي بمساحة 5 مرلات حوالي 3 إلى 4 أشهر للاتمام، اعتماداً على توفر العمالة الظروف الجوية.",
+faq_q2: "ما الذي يتم تضمينه في تكلفة الهيكل العظمي؟",
+faq_a2: "يشمل الهيكل العظمي أعمال الحفر، الأساسات، بناء الطوب، أعمال الخرسانة المسلحة (الأسقف)، البياض، خزانات المياه الأرضية، والتمديدات الأساسية.",
+faq_q3: "ما مدى دقة تقديرات التكاليف هذه؟",
+faq_a3: "تستند تقديراتنا إلى متوسط أسعار السوق الحالية في المدن الباكستانية الكبرى.",
+
+    },
+    sd: {
+        brand_name: "پاڪ بلڊ",
+        nav_home: "هوم",
+        nav_calculator: "ليک ڪندڙ",
+        nav_blueprint: "نقشو",
+        nav_designs: "گهرن جا ڊزائن",
+        nav_booking: "مشورو",
+        theme_settings: "ٿيم جون سيٽنگون",
+        accent_color: "خاص رنگ",
+        display_mode: "ڊسپلي موڊ",
+        dark_mode: "ڊارڪ موڊ",
+        light_mode: "لائٽ موڊ",
+        badge_text: "✨ پاڪستان جو بهترين تعميراتي تخمينو ۽ ڊزائن گئلري",
+        hero_title: "مڪمل مالي تفصيل سان پنهنجو خوابن جو گهر ٺاهيو",
+        hero_subtitle: "پاڪستاني ريئل اسٽيٽ مارڪيٽ مطابق گري اسٽرڪچر لاڳت، فنشنگ، ۽ مواد جو تخمينو.",
+        calc_heading: "پروجيڪٽ جون تفصيلون",
+        plot_size_label: "پلاٽ جو سائيز",
+        construction_type_label: "تعمير جو معيار",
+        city_label: "شهر جي چونڊ",
+        floors_label: "منزلن جو تعداد",
+        calculate_btn: "تخمينو لڳايو",
+        cost_breakdown_title: "تخميني مالي تفصيل",
+        total_cost: "ڪُل لاڳت",
+        grey_cost: "گري اسٽرڪچر",
+        finishing_cost: "فنشنگ لاڳت",
+        material_requirements: "خام مال جو تخمينو",
+        cement: "سيمينٽ جون ٻوريون",
+        steel: "اسٽيل (ٽن)",
+        bricks: "ενٽون / ఇٽون",
+        sand: "راري (سي ايف ٽي)",
+        download_pdf: "پي ڊي ايف رپورٽ ڊائون لوڊ ڪريو",
+        whatsapp_btn: "واٽس اپ تي رابطو ڪريو",
+        floor_plan_title: "انٽرايڪٽو 2D بليو پرنٽ لئي آئوٽ",
+        floor_plan_subtitle: "منتخب پلاٽ جي سائيز جي بنياد تي تيار ڪيل آرڪيٽيڪچرل لئي آئوٽ.",
+        design_gallery_title: "پاڪستاني گهرن جا ڊزائن ۽ ايليويشن گئلري",
+        design_gallery_subtitle: "جديد فرنٽس، اندروني حصا ۽ روايتي طرز جا ڊزائن ڏسو.",
+        filter_all: "سڀ انداز",
+        filter_modern: "جديد لگزري",
+        filter_traditional: "ڪلاسيڪل پاڪستاني",
+        filter_minimalist: "منملسٽ",
+        booking_title: "مفت ماهر مشاورت بک ڪريو",
+        booking_subtitle: "اسان جي سينئر آرڪيٽيڪٽس سان سيشن طئي ڪريو.",
+        select_slot: "دستياب وقت",
+        confirm_booking_btn: "ملاقات جي تصديق ڪريو",
+        nav_contact: "رابطو",
+        contact_title: "رابطو ڪريو",
+        contact_subtitle: "سوال آهي يا گڏجي ڪم ڪرڻ چاهيو ٿا؟ هيٺ پيغام موڪليو!",
+        contact_firstname: "پهريون نالو",
+        contact_lastname: "آخري نالو",
+        contact_email: "اي ميل ايڊريس",
+        contact_message: "پيغام",
+        contact_send_btn: "پيغام موڪليو",
+        // --- SINDHI (sd) ---
+testimonial_title: "اسان جي صارفين جو رايو",
+testimonial_subtitle: "سڄي پاڪستان جي سوين گهر مالڪن جو اعتماد",
+review_1: "\"لاهور ۾ منهنجي 5 مرلن جي گري اسٽرڪچر لاءِ پاڪ بلڊ جو تخمينو لڳائيندڙ حيرت انگيز طور تي صحيح هو. اڻڄاتل خرچن کان بچائي ورتو!\"",
+client_1_loc: "لاهور",
+review_2: "\"نقشي ۽ مواد جي تخميني مون کي ٺيڪيدار رکڻ کان اڳ مڪمل وضاحت ڏني. هر ڪنهن لاءِ تمام گهڻو تجويز ڪيل.\"",
+client_2_loc: "اسلام آباد",
+review_3: "\"تمام صاف سٿرو انٽرفيس ۽ گھڻن ٻولين جي سپورٽ منهنجي والد لاءِ تخمينو سمجهڻ تمام آسان بڻائي ڇڏيو. بهترين ڪم!\"",
+client_3_loc: "ڪراچي",
+// --- SINDHI (sd) ---
+faq_title: "عام سوال (FAQ)",
+faq_subtitle: "پاڪستان ۾ گهر جي تعمير جي حوالي سان سوال آهن؟ هتي جواب حاصل ڪريو.",
+faq_q1: "5 مرلي گهر جو گري اسٹرڪچر ٺاهڻ ۾ ڪترو وقت لڳندو آهي؟",
+faq_a1: "عام ਤور تي 5 مرلي جو گري اسٹرڪچر مڪمل ٿيڻ ۾ 3 کان 4 مهينا لڳندا آهن، جيڪو مزدورن ۽ موسم جي حالتن تي منحصر هوندو آهي.",
+faq_q2: "گري اسٹرڪچر جي خرچ ۾ ڇا ڇا شامل هوندو آهي؟",
+faq_a2: "گري اسٹرڪچر ۾ بنياد، اينٽن جو ڪم، ڇت, پلستر، زمين هيٺ پاڻي جي ٽينڪي ۽ بنيادي پائپنگ شامل هوندي آهي.",
+faq_q3: "هي خرچ جو تخمينو ڪترو صحيح آهي؟",
+faq_a3: "اسان جو تخمينو پاڪستان جي وڏن شهرن جي موجوده مارڪيٽ اگهن جي بنياد تي آهي.",
+    },
+    fa: {
+        brand_name: "پاک بیلد",
+        nav_home: "خانه",
+        nav_calculator: "ماشین حساب",
+        nav_blueprint: "نقشه",
+        nav_designs: "طراحی‌های خانه",
+        nav_booking: "مشاوره",
+        theme_settings: "تنظیمات تم",
+        accent_color: "رنگ اصلی",
+        display_mode: "حالت نمایش",
+        dark_mode: "حالت تاریک",
+        light_mode: "حالت روشن",
+        badge_text: "✨ بهترین برآوردکننده ساخت‌وساز و گالری طراحی در پاکستان",
+        hero_title: "خانه رؤیایی خود را با شفافیت کامل مالی بسازید",
+        hero_subtitle: "برآورد هزینه اسکلت خاکستری، نازک‌کاری و مصالح مطابق با بازار مسکن پاکستان.",
+        calc_heading: "جزئیات پروژه",
+        plot_size_label: "اندازه زمین",
+        construction_type_label: "معیار ساخت",
+        city_label: "انتخاب شهر",
+        floors_label: "تعداد طبقات",
+        calculate_btn: "محاسبه برآورد",
+        cost_breakdown_title: "جزئیات مالی برآورد شده",
+        total_cost: "هزینه کل",
+        grey_cost: "اسکلت (گری استراکتور)",
+        finishing_cost: "هزینه تکمیل (فینیشینگ)",
+        material_requirements: "برآورد مصالح خام",
+        cement: "کیسه‌های سیمان",
+        steel: "فولاد (تن)",
+        bricks: "آجرها",
+        sand: "شن و ماسه (فوت مکعب)",
+        download_pdf: "دانلود گزارش PDF",
+        whatsapp_btn: "ارتباط در واتس‌اپ",
+        floor_plan_title: "نقشه مهندسی دو بعدی تعاملی",
+        floor_plan_subtitle: "چیدمان معماری تولید شده بر اساس اندازه زمین انتخاب شده.",
+        design_gallery_title: "گالری طراحی و نمای خانه‌های پاکستانی",
+        design_gallery_subtitle: "نمای مدرن، فضای داخلی و طراحی‌های سبک سنتی را مشاهده کنید.",
+        filter_all: "تمام سبک‌ها",
+        filter_modern: "لوکس مدرن",
+        filter_traditional: "کلاسیک پاکستانی",
+        filter_minimalist: "مینیمالیست",
+        booking_title: "رزرو مشاوره رایگان با متخصص",
+        booking_subtitle: "جلسه‌ای با معماران ارشد ما تنظیم کنید.",
+        select_slot: "زمان‌های موجود",
+        confirm_booking_btn: "تایید قرار ملاقات",
+        nav_contact: "تماس با ما",
+        contact_title: "ارتباط با ما",
+        contact_subtitle: "سؤالی دارید یا می‌خواهید همکاری کنید؟ پیام خود را در زیر بفرستید!",
+        contact_firstname: "نام",
+        contact_lastname: "نام خانوادگی",
+        contact_email: "آدرس ایمیل",
+        contact_message: "پیغام",
+        contact_send_btn: "ارسال پیام",
+        // --- PERSIAN (fa) ---
+testimonial_title: "نظرات مشتریان ما",
+testimonial_subtitle: "مورد اعتماد صدها صاحب‌خانه در سراسر پاکستان",
+review_1: "\"محاسبه‌گر هزینه پاک بیلد برای اسکلت ۵ مرله من در لاهور فوق‌العاده دقیق بود. مرا از هزینه‌های غیرمنتظره نجات داد!\"",
+client_1_loc: "لاهور",
+review_2: "\"نقشه‌ها و برآوردهای مواد به من وضوح کامل داد تا پیش از استخدام پیمانکار با خیال راحت اقدام کنم. بسیار توصیه می‌شود.\"",
+client_2_loc: "اسلام‌آباد",
+review_3: "\"رابط کاربری بسیار تمیز و پشتیبانی چندزبانه درک برآوردها را برای پدرم بسیار آسان کرد. کار عالی!\"",
+client_3_loc: "کراچی",
+// --- PERSIAN (fa) ---
+faq_title: "سؤالات متداول",
+faq_subtitle: "درباره ساخت‌وساز خانه در پاکستان سؤالی دارید؟ پاسخ‌ها را اینجا بیابید.",
+faq_q1: "ساخت اسکلت خاکستری یک خانه ۵ مرله چقدر طول می‌کشد؟",
+faq_a1: "به طور معمول، ساخت اسکلت خاکستری یک واحد ۵ مرله بین ۳ تا ۴ ماه زمان می‌برد که بسته به دسترسی به نیروی کار و شرایط آب‌وهوایی متغیر است.",
+faq_q2: "چه مواردی در هزینه اسکلت خاکستری گنجانده شده است؟",
+faq_a2: "اسکلت خاکستری شامل خاک‌برداری، پی‌ریزی، آجرچینی، کارهای بتنی (سقف‌ها و ستون‌ها)، گچ‌کاری، مخازن آب زیرزمینی و لوله‌کشی اولیه است.",
+faq_q3: "این برآوردهای هزینه چقدر دقیق هستند؟",
+faq_a3: "برآوردهای ما بر اساس میانگین نرخ‌های روز بازار در شهرهای بزرگ پاکستان محاسبه شده‌اند."
+    }
+};
+    
+
+        let currentLang = 'en';
+
+function changeLanguage(lang) {
+    currentLang = lang;
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+            el.innerText = t[key];
+        }
+    });
+    
+    // RTL (Right-to-Left) check for Urdu, Pashto, Arabic, Sindhi, and Persian
+    if (lang === 'ur' || lang === 'ps' || lang === 'ar' || lang === 'sd' || lang === 'fa') {
+        document.documentElement.setAttribute('dir', 'rtl');
+    } else {
+        document.documentElement.setAttribute('dir', 'ltr');
+    }
+}
+    
+
+        // --- THEME ENGINE ---
+        function toggleThemeModal() {
+            const modal = document.getElementById('themeModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function setThemeColor(primary, hover) {
+            document.documentElement.style.setProperty('--primary-color', primary);
+            document.documentElement.style.setProperty('--primary-hover', hover);
+            toggleThemeModal();
+            showToast("Theme accent updated successfully!");
+        }
+
+        function setMode(mode) {
+            const html = document.documentElement;
+            if (mode === 'dark') {
+                html.classList.add('dark');
+                html.classList.remove('light');
+                bodyBg('#020617');
+            } else {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                bodyBg('#f8fafc');
+            }
+            toggleThemeModal();
+            showToast(`Switched to ${mode} mode!`);
+        }
+
+        function bodyBg(color) {
+            document.body.style.backgroundColor = color;
+        }
+
+        
+        // --- CALCULATOR LOGIC ---
+        function calculateCost() {
+            const marlaSize = parseInt(document.getElementById('plotSize').value);
+            const quality = document.getElementById('constructionType').value;
+            const city = document.getElementById('city').value;
+            const floors = parseInt(document.getElementById('floors').value);
+
+            let sqft = marlaSize * 225 * floors;
+
+            // City multi-pliers
+            let cityMultiplier = 1.0;
+            if (city === 'islamabad' || city === 'rawalpindi') cityMultiplier = 1.08;
+            if (city === 'karachi') cityMultiplier = 1.05;
+            if (city === 'faisalabad') cityMultiplier = 0.95;
+
+            // Rates per sqft based on quality
+            let greyRate = 2400;
+            let finishRate = 2200;
+            if (quality === 'grey') finishRate = 0;
+            if (quality === 'premium') finishRate = 4500;
+
+            let totalGrey = sqft * greyRate * cityMultiplier;
+            let totalFinish = sqft * finishRate * cityMultiplier;
+            let grandTotal = totalGrey + totalFinish;
+
+            // Material ratios per 1000 sq ft grey structure
+            let cementBags = Math.round((sqft / 1000) * 450);
+            let steelTons = parseFloat(((sqft / 1000) * 3.5).toFixed(1));
+            let bricksCount = Math.round((sqft / 1000) * 10000);
+            let sandCft = Math.round((sqft / 1000) * 3000);
+
+            // Animate Counter effect
+            animateValue("resTotal", grandTotal);
+            animateValue("resGrey", totalGrey);
+            animateValue("resFinishing", totalFinish);
+
+            document.getElementById('matCement').innerText = cementBags.toLocaleString();
+            document.getElementById('matSteel').innerText = steelTons;
+            document.getElementById('matBricks').innerText = bricksCount.toLocaleString();
+            document.getElementById('matSand').innerText = sandCft.toLocaleString();
+
+            renderFloorPlan(marlaSize);
+            showToast("Construction estimate calculated successfully!");
+
+            // Save to backend if logged in
+            const token = localStorage.getItem('pakbuild_token');
+            if (token) {
+                saveProjectToBackend({
+                    plotSize: marlaSize,
+                    constructionType: quality,
+                    city: cityVal,
+                    floors: floorsVal,
+                    totalCost: grandTotal,
+                    greyCost: totalGrey,
+                    finishingCost: totalFinish
+                });
+            }
+        }
+
+        function animateValue(id, target) {
+            const obj = document.getElementById(id);
+            let current = 0;
+            let step = target / 25;
+            let timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                obj.innerText = "PKR " + Math.round(current).toLocaleString();
+            }, 20);
+        }
+
+        // --- FLOOR PLAN SVG GENERATOR ---
+        function renderFloorPlan(marla) {
+            const container = document.getElementById('svgContainer');
+            const indicator = document.getElementById('plotSizeIndicator');
+            indicator.innerText = `${marla === 20 ? '1 Kanal' : marla + ' Marla'} Layout`;
+
+            let svgContent = '';
+            if (marla === 3) {
+                svgContent = `
+                    <svg viewBox="0 0 400 300" class="w-full h-auto text-slate-400">
+                        <rect x="10" y="10" width="380" height="280" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5,5"/>
+                        <rect x="15" y="15" width="180" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="70" y="85" fill="#fff" font-size="12" font-weight="bold">Bed Room 1</text>
+                        <rect x="205" y="15" width="180" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="260" y="85" fill="#fff" font-size="12" font-weight="bold">TV Lounge</text>
+                        <rect x="15" y="155" width="120" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="50" y="225" fill="#fff" font-size="12" font-weight="bold">Kitchen</text>
+                        <rect x="145" y="155" width="240" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="230" y="225" fill="#fff" font-size="12" font-weight="bold">Car Porch / Lawn</text>
+                    </svg>
+                `;
+            } else if (marla === 5) {
+                svgContent = `
+                    <svg viewBox="0 0 400 300" class="w-full h-auto text-slate-400">
+                        <rect x="10" y="10" width="380" height="280" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5,5"/>
+                        <rect x="15" y="15" width="170" height="120" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="65" y="80" fill="#fff" font-size="12" font-weight="bold">Bed Room 1</text>
+                        <rect x="195" y="15" width="190" height="120" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="260" y="80" fill="#fff" font-size="12" font-weight="bold">TV Lounge</text>
+                        <rect x="15" y="145" width="170" height="140" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="75" y="220" fill="#fff" font-size="12" font-weight="bold">Kitchen</text>
+                        <rect x="195" y="145" width="190" height="140" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="250" y="220" fill="#fff" font-size="12" font-weight="bold">Drawing Room</text>
+                    </svg>
+                `;
+            } else {
+                svgContent = `
+                    <svg viewBox="0 0 400 300" class="w-full h-auto text-slate-400">
+                        <rect x="10" y="10" width="380" height="280" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="5,5"/>
+                        <rect x="15" y="15" width="180" height="270" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="70" y="150" fill="#fff" font-size="12" font-weight="bold">Master Wing</text>
+                        <rect x="205" y="15" width="180" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="260" y="85" fill="#fff" font-size="12" font-weight="bold">Grand Lounge</text>
+                        <rect x="205" y="155" width="180" height="130" fill="rgba(5,150,105,0.1)" stroke="currentColor" stroke-width="2"/>
+                        <text x="250" y="225" fill="#fff" font-size="12" font-weight="bold">Lawn & Garage</text>
+                    </svg>
+                `;
+            }
+            container.innerHTML = svgContent;
+        }
+
+        // --- HOUSE DESIGN & ELEVATION GALLERY DATA & RENDER ---
+       const homeDesignsData = [
+    {
+        id: 1,
+        title: "Contemporary 5 Marla Elevation",
+        category: "modern",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+        badge: "Modern Luxury",
+        desc: "Featuring clean geometric louvers, warm wood tiles, and architectural profile lighting popular in DHA & Bahria Town."
+    },
+    {
+        id: 2,
+        title: "Classic Pakistani Royal Villa",
+        category: "traditional",
+        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80",
+        badge: "Classic Pakistani",
+        desc: "Grand arched windows, carved stone pillars, and majestic balconies suited for 10 Marla and Kanal plots."
+    },
+    {
+        id: 3,
+        title: "Minimalist Ashlar Stone House",
+        category: "minimalist",
+        image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
+        badge: "Minimalist Ashlar",
+        desc: "Sleek exposed brick textures, matte grey cladding, and open glass facades for maximum natural sunlight."
+    },
+    {
+        id: 4,
+        title: "Urban Double Story 3 Marla Facade",
+        category: "modern",
+        image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+        badge: "Modern Luxury",
+        desc: "Space-optimized compact luxury designed specifically for urban residential schemes in Lahore & Faisalabad."
+    },
+    {
+        id: 5,
+        title: "Traditional Courtyard (Haveli Style)",
+        category: "traditional",
+        image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80",
+        badge: "Classic Pakistani",
+        desc: "Inspired by timeless subcontinental architecture featuring open central courtyard ventilation."
+    },
+    {
+        id: 6,
+        title: "Scandinavian Minimalist Villa",
+        category: "minimalist",
+        image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80",
+        badge: "Minimalist Ashlar",
+        desc: "Crisp white exterior finishes paired with dark grey aluminum sliding windows and lush vertical lawns."
+    },
+    {
+        id: 7,
+        title: "Luxury 1 Kanal Glass Mansion",
+        category: "modern",
+        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80",
+        badge: "Modern Luxury",
+        desc: "An expansive architectural masterpiece boasting double-height glass windows and sleek cantilevered balconies."
+    },
+    {
+        id: 8,
+        title: "Mughal Heritage Inspired Bungalow",
+        category: "traditional",
+        image: "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=600&q=80",
+        badge: "Classic Pakistani",
+        desc: "Incorporating intricate jali work, classic brick arches, and terracotta tiled roofing for a timeless aesthetic."
+    },
+    {
+        id: 9,
+        title: "Mono-Pitch Modern 7 Marla House",
+        category: "modern",
+        image: "https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?auto=format&fit=crop&w=600&q=80",
+        badge: "Modern Luxury",
+        desc: "Striking slope roofing design combined with vertical wooden battens and integrated outdoor terrace lights."
+    },
+   {
+        id: 10,
+        title: "Zenith Industrial Concrete Villa",
+        category: "minimalist",
+        image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=600&q=80",
+        badge: "Minimalist Ashlar",
+        desc: "Raw architectural concrete finishes accented with black steel frames and minimalist linear garden planters."
+    },
+    {
+        id: 11,
+        title: "Sunset Horizon 10 Marla Modern",
+        category: "modern",
+        image: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=600&q=80",
+        badge: "Modern Luxury",
+        desc: "Featuring expansive glass balconies, warm exterior LED strip lighting, and a chic cantilever porch design."
+    },
+    {
+        id: 12,
+        title: "Heritage Red Brick Bungalow",
+        category: "traditional",
+        image: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=600&q=80",
+        badge: "Classic Pakistani",
+        desc: "Exquisite exposed red brickwork combined with classic white marble borders and timeless arched entryways."
+    }
+];
+
+        function renderDesignGallery(filter = 'all') {
+            const grid = document.getElementById('designGalleryGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' ? homeDesignsData : homeDesignsData.filter(d => d.category === filter);
+
+            filtered.forEach(item => {
+                grid.innerHTML += `
+                    <div class="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden group hover:border-primary transition duration-300">
+                        <div class="relative overflow-hidden h-48">
+                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-primary/90 text-white text-[10px] font-semibold backdrop-blur-sm">
+                                ${item.badge}
+                            </span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h4 class="text-sm font-bold text-white group-hover:text-primary transition">${item.title}</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">${item.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterDesigns(category) {
+            // Update button states
+            ['all', 'modern', 'traditional', 'minimalist'].forEach(cat => {
+                const btn = document.getElementById(`filter-${cat}`);
+                if (cat === category) {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 text-xs font-semibold hover:border-primary transition";
+                }
+            });
+            renderDesignGallery(category);
+            showToast(`Filtered designs by: ${category}`);
+        }
+
+        // --- BOOKING CALENDAR WIDGET ---
+        let selectedDateObj = null;
+        let selectedSlotTime = null;
+
+        function initCalendar() {
+            const daysContainer = document.getElementById('calendarDays');
+            daysContainer.innerHTML = '';
+            // Generate mock days for July 2026 (Starts on Wednesday -> index 3)
+            for (let i = 0; i < 3; i++) {
+                daysContainer.innerHTML += `<div></div>`;
+            }
+            for (let d = 1; d <= 31; d++) {
+                let isSunday = (d % 7 === 3); // Mock check
+                let disabledClass = isSunday ? 'opacity-30 cursor-not-allowed' : 'hover:border-primary cursor-pointer';
+                daysContainer.innerHTML += `
+                    <div onclick="${isSunday ? '' : `selectDate(this, ${d})`}" class="p-2 rounded-xl bg-slate-900/50 border border-slate-800 text-slate-200 ${disabledClass} transition">
+                        ${d}
+                    </div>
+                `;
+            }
+        }
+
+        function selectDate(el, day) {
+            document.querySelectorAll('#calendarDays div').forEach(d => d.classList.remove('border-primary', 'bg-primary/20'));
+            el.classList.add('border-primary', 'bg-primary/20');
+            selectedDateObj = `July ${day}, 2026`;
+        }
+
+        function selectSlot(el) {
+            document.querySelectorAll('#timeSlots button').forEach(b => b.classList.remove('border-primary', 'bg-primary/20'));
+            el.classList.add('border-primary', 'bg-primary/20');
+            selectedSlotTime = el.innerText;
+        }
+
+        function confirmBooking() {
+            if (!selectedDateObj || !selectedSlotTime) {
+                showToast("Please select both a date and time slot!");
+                return;
+            }
+
+            const token = localStorage.getItem('pakbuild_token');
+            if (!token) {
+                showToast("Please login first to book a consultation.");
+                window.location.href = '/pages/login.html';
+                return;
+            }
+
+            fetch('/api/bookings?action=create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({
+                    date: selectedDateObj,
+                    timeSlot: selectedSlotTime,
+                    serviceType: 'consultation',
+                    city: document.getElementById('city')?.value || 'Lahore'
+                })
+            }).then(r => r.json()).then(data => {
+                if (data.success) {
+                    showToast(`Consultation booked for ${selectedDateObj} at ${selectedSlotTime}.`);
+                } else {
+                    showToast('Booking failed. Please try again.');
+                }
+            }).catch(() => showToast('Server error.'));
+        }
+
+        // --- EXPORT & WHATSAPP ---
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("PakBuild Pro - Construction Cost Estimate", 20, 20);
+            doc.text(`Total Estimated Cost: ${document.getElementById('resTotal').innerText}`, 20, 40);
+            doc.text(`Grey Structure: ${document.getElementById('resGrey').innerText}`, 20, 50);
+            doc.text(`Finishing Cost: ${document.getElementById('resFinishing').innerText}`, 20, 60);
+            doc.text(`Cement Bags: ${document.getElementById('matCement').innerText}`, 20, 80);
+            doc.text(`Steel (Tons): ${document.getElementById('matSteel').innerText}`, 20, 90);
+            doc.save("construction-estimate.pdf");
+            showToast("PDF Report downloaded successfully!");
+        }
+
+        function openWhatsApp() {
+            const total = document.getElementById('resTotal').innerText;
+            const msg = encodeURIComponent(`Hello PakBuild Pro, I want to discuss my construction project estimated at ${total}.`);
+            window.open(`https://wa.me/?text=${msg}`, '_blank');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            calculateCost();
+            initCalendar();
+            renderDesignGallery('all');
+        };
+    </script>
+    <!-- Contractor Connection & Consultation Section -->
+<section id="booking" class="py-16 px-4 bg-slate-900/50 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto glass p-8 rounded-2xl shadow-xl">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-white mb-2" data-i18n="builder_title">Connect with Expert Builders & Contractors</h2>
+            <p class="text-slate-400 text-sm" data-i18n="builder_subtitle">Get professional consultation, accurate cost estimates, and direct project supervision in Pakistan.</p>
+        </div>
+
+        <form id="contractorForm" onsubmit="handleContractorInquiry(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-2" data-i18n="form_name">Full Name</label>
+                    <input type="text" id="clientName" required placeholder="e.g. Ali Khan" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-primary">
+                </div>
+                <!-- Phone Number -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-2" data-i18n="form_phone">Phone Number (WhatsApp)</label>
+                    <input type="tel" id="clientPhone" required placeholder="0300-1234567" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-primary">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Service Type -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-2" data-i18n="form_service">Required Service</label>
+                    <select id="serviceType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-primary">
+                        <option value="Grey Structure Construction">Grey Structure Construction</option>
+                        <option value="Complete Finishing">Complete Finishing</option>
+                        <option value="Architectural 2D/3D Design">Architectural 2D/3D Design</option>
+                        <option value="Full Turnkey Project">Full Turnkey Project (A-Z)</option>
+                    </select>
+                </div>
+                <!-- City -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-2" data-i18n="form_city">City / Location</label>
+                    <select id="projectCity" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-primary">
+                        <option value="Lahore">Lahore</option>
+                        <option value="Islamabad / Rawalpindi">Islamabad / Rawalpindi</option>
+                        <option value="Karachi">Karachi</option>
+                        <option value="Faisalabad">Faisalabad</option>
+                        <option value="Other City">Other City / Punjab</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Message / Requirements -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase mb-2" data-i18n="form_message">Project Details & Budget</label>
+                <textarea id="projectDetails" rows="4" placeholder="Mention plot size (e.g., 5 Marla) and estimated budget..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-primary"></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 justify-end">
+                <button type="submit" class="bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-primary/30 transition flex items-center space-x-2">
+                    <span>Send Inquiry</span>
+                </button>
+                <button type="button" onclick="sendToWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg shadow-emerald-600/30 transition flex items-center space-x-2">
+                    <span>Chat on WhatsApp 💬</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+    <!-- Testimonials Section -->
+<section id="testimonials" style="padding: 60px 20px; background-color: #0f172a; text-align: center; color: #ffffff;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="font-size: 2.2rem; margin-bottom: 10px; color: #10b981;" data-i18n="testimonial_title">What Our Clients Say</h2>
+        <p style="color: #94a3b8; margin-bottom: 40px;" data-i18n="testimonial_subtitle">Trusted by hundreds of homeowners across Pakistan</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; text-align: left;">
+            
+            <!-- Review Card 1 -->
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <div style="color: #f59e0b; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
+                <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;" data-i18n="review_1">"PakBuild's cost calculator was amazingly accurate for my 5-marla grey structure in Lahore. Saved me from unexpected budget surprises!"</p>
+                <h4 style="color: #ffffff; margin: 0; font-size: 1rem;">Usman Tariq</h4>
+                <span style="color: #64748b; font-size: 0.85rem;" data-i18n="client_1_loc">Lahore</span>
+            </div>
+
+            <!-- Review Card 2 -->
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <div style="color: #f59e0b; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
+                <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;" data-i18n="review_2">"The floor plans and material estimations gave me complete clarity before hiring a contractor. Highly recommended for anyone building a home."</p>
+                <h4 style="color: #ffffff; margin: 0; font-size: 1rem;">Ayesha Malik</h4>
+                <span style="color: #64748b; font-size: 0.85rem;" data-i18n="client_2_loc">Islamabad</span>
+            </div>
+
+            <!-- Review Card 3 -->
+            <div style="background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <div style="color: #f59e0b; font-size: 1.2rem; margin-bottom: 15px;">★★★★★</div>
+                <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;" data-i18n="review_3">"Very clean interface and multi-language support made it super easy for my father to understand the estimates in Urdu. Great job!"</p>
+                <h4 style="color: #ffffff; margin: 0; font-size: 1rem;">Bilal Ahmed</h4>
+                <span style="color: #64748b; font-size: 0.85rem;" data-i18n="client_3_loc">Karachi</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+    <!-- Contact Page Section with i18n Attributes -->
+<section id="contact-section" style="max-width: 800px; margin: 40px auto; padding: 30px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-family: sans-serif; color: #fff;">
+  <div style="text-align: center; margin-bottom: 25px;">
+    <h2 data-i18n="contact_title" style="font-size: 2rem; margin-bottom: 8px; color: #fff;">Get in Touch</h2>
+    <p data-i18n="contact_subtitle" style="color: #94a3b8; font-size: 0.95rem;">Have questions or want to collaborate? Send a message below!</p>
+  </div>
+
+  <form action="https://formspree.io/f/xrenyjra" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+    
+    <div style="display: flex; gap: 15px;">
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+        <label data-i18n="contact_firstname" style="font-size: 0.9rem; color: #cbd5e1;">First Name</label>
+        <input type="text" name="first_name" placeholder="Enter first name" required style="width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 0.95rem;">
+      </div>
+      
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 5px;">
+        <label data-i18n="contact_lastname" style="font-size: 0.9rem; color: #cbd5e1;">Last Name</label>
+        <input type="text" name="last_name" placeholder="Enter last name" required style="width: 100%; padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 0.95rem;">
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <label data-i18n="contact_email" style="font-size: 0.9rem; color: #cbd5e1;">Email Address</label>
+      <input type="email" name="email" placeholder="Enter your email" required style="padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 0.95rem;">
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <label data-i18n="contact_message" style="font-size: 0.9rem; color: #cbd5e1;">Message</label>
+      <textarea name="message" rows="4" placeholder="Write your message here..." required style="padding: 12px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 0.95rem; resize: vertical;"></textarea>
+    </div>
+
+    <button type="submit" data-i18n="contact_send_btn" style="margin-top: 10px; background: #10b981; color: #fff; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
+      Send Message
+    </button>
+  </form>
+</section>
+<!-- FAQ Section -->
+<section style="padding: 60px 20px; background-color: #0b0f19; color: #ffffff;">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <h2 style="font-size: 2.2rem; text-align: center; margin-bottom: 10px; color: #10b981;" data-i18n="faq_title">Frequently Asked Questions</h2>
+        <p style="text-align: center; color: #94a3b8; margin-bottom: 40px;" data-i18n="faq_subtitle">Got questions about home construction in Pakistan? Find answers here.</p>
+        
+        <!-- FAQ Item 1 -->
+        <div style="background: #1e293b; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; overflow: hidden;">
+            <button onclick="toggleFaq(this)" style="width: 100%; background: none; border: none; padding: 20px; text-align: left; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <span data-i18n="faq_q1">How long does it take to build a 5 Marla house grey structure?</span>
+                <span>▼</span>
+            </button>
+            <div style="padding: 0 20px 20px 20px; color: #94a3b8; font-size: 0.95ln; display: none;" data-i18n="faq_a1">
+                Typically, a standard 5-marla grey structure takes around 3 to 4 months to complete, depending on labor availability and weather conditions.
+            </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div style="background: #1e293b; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; overflow: hidden;">
+            <button onclick="toggleFaq(this)" style="width: 100%; background: none; border: none; padding: 20px; text-align: left; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                <span data-i18n="faq_q2">What is included in the Grey Structure cost?</span>
+                <span>▼</span>
+            </button>
+            <div style="padding: 0 20px 20px 20px; color: #94a3b8; font-size: 0.95rem; display: none;" data-i18n="faq_a2">
+                Grey structure includes earthwork, foundation, brick masonry, R.C.C work (roofs, beams, columns), plaster, underground water tanks, and basic plumbing/electric piping.
+            </div>
+        </div>
+
+       <!-- FAQ Section Container -->
+<div class="max-w-3xl mx-auto space-y-4">
+
+    <!-- FAQ Item 3 -->
+    <div style="background: #1e293b; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; overflow: hidden;">
+        <button onclick="toggleFaq(this)" style="width: 100%; background: none; border: none; padding: 20px; text-align: left; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+            <span data-i18n="faq_q3">How accurate are these cost estimates?</span>
+            <span>▼</span>
+        </button>
+        <div style="padding: 0 20px 20px 20px; color: #94a3b8; font-size: 0.95rem; display: none;" data-i18n="faq_a3">
+            Our estimates are based on real-time average market rates across major Pakistani cities (Lahore, Karachi, Islamabad), though local contractor variations may apply.
+        </div>
+    </div>
+
+
+</div>
+
+<!-- FAQ Toggle JavaScript (Agar pehle se mojood na ho) -->
+<script>
+    function toggleFaq(button) {
+        const content = button.nextElementSibling;
+        const arrow = button.querySelector('span:last-child');
+        
+        if (content.style.display === "block") {
+            content.style.display = "none";
+            arrow.style.transform = "rotate(0deg)";
+        } else {
+            content.style.display = "block";
+            arrow.style.transform = "rotate(180deg)";
+        }
+    }
+</script>
+    </div>
+</section>
+
+<script>
+function toggleFaq(button) {
+    const answer = button.nextElementSibling;
+    if (answer.style.display === "block") {
+        answer.style.display = "none";
+    } else {
+        answer.style.display = "block";
+    }
+}
+function handleContractorInquiry(event) {
+    event.preventDefault();
+    const name = document.getElementById('clientName').value;
+    const phone = document.getElementById('clientPhone').value;
+    const service = document.getElementById('serviceType').value;
+    const city = document.getElementById('projectCity').value;
+    const details = document.getElementById('projectDetails').value;
+
+            fetch('/api/inquiries?action=create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            name, phone, serviceType: service, city, message: details,
+            source: 'contractor-form'
+        })
+    }).then(r => r.json()).then(data => {
+        if (data.success) {
+            showToast(`Thank you, ${name}! Your inquiry has been submitted. We will contact you soon.`);
+        } else {
+            showToast('Submission failed. Please try again.');
+        }
+    }).catch(() => showToast('Server error. Please try again.'));
+    document.getElementById('contractorForm').reset();
+}
+
+function sendToWhatsApp() {
+    const name = document.getElementById('clientName').value || "Client";
+    const service = document.getElementById('serviceType').value;
+    const city = document.getElementById('projectCity').value;
+    const details = document.getElementById('projectDetails').value || "No extra details";
+
+    const message = `Hello PakBuild Pro,%0A%0A*New Project Inquiry*%0A*Name:* ${name}%0A*Service:* ${service}%0A*City:* ${city}%0A*Details:* ${details}`;
+    
+    // Yahan apna WhatsApp number likh dein (with country code, e.g., 923001234567)
+    const whatsappNumber = "923000000000"; 
+    
+    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+}
+</script>
+
+<!-- Highlighted Author Footer -->
+<footer style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 25px; text-align: center; margin: 40px auto; max-width: 800px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);">
+  <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: #fff;">
+    👩‍💻 Author
+  </div>
+  <div style="font-size: 1rem; margin-bottom: 6px; color: #e2e8f0;">
+    Created with ❤️ by <span style="font-weight: 700; color: #10b981;">Mahnoor Fatima</span>
+  </div>
+  <div style="font-size: 0.9rem; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 12px;">
+    Full-Stack, Backend & AI Agentic Developer
+  </div>
+  <!-- Copyright Notice Added -->
+  <div style="font-size: 0.8rem; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); pt-12 mt-3 pt-3">
+    © 2026 PakBuild Pro. All rights reserved.
+  </div>
+</footer>
+<!-- Back to Top Button -->
+<button onclick="scrollToTop()" id="backToTopBtn" class="fixed bottom-6 right-6 z-50 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 hover:bg-primaryHover transform hover:-translate-y-1">
+    ↑
+</button>
+
+<script>
+    // Scroll hone par button show/hide karna
+    window.addEventListener('scroll', function() {
+        const btn = document.getElementById('backToTopBtn');
+        if (window.scrollY > 300) {
+            btn.classList.remove('opacity-0', 'pointer-events-none');
+            btn.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+            btn.classList.remove('opacity-100', 'pointer-events-auto');
+            btn.classList.add('opacity-0', 'pointer-events-none');
+        }
+    });
+
+    // Smoothly top par jane ka function
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+</script>
+</body>
+</html>
