@@ -159,6 +159,31 @@
                         <span class="text-white font-bold text-sm">PKR 85</span>
                         <span class="text-green-400 text-xs">&#9650; 1.2%</span>
                     </div>
+                    <div class="flex items-center space-x-2 whitespace-nowrap">
+                        <span class="text-slate-400 text-xs">Cement (50kg)</span>
+                        <span class="text-white font-bold text-sm">PKR 1,150</span>
+                        <span class="text-green-400 text-xs">&#9650; 2.1%</span>
+                    </div>
+                    <div class="flex items-center space-x-2 whitespace-nowrap">
+                        <span class="text-slate-400 text-xs">Steel Saria</span>
+                        <span class="text-white font-bold text-sm">PKR 265/kg</span>
+                        <span class="text-red-400 text-xs">&#9660; 1.5%</span>
+                    </div>
+                    <div class="flex items-center space-x-2 whitespace-nowrap">
+                        <span class="text-slate-400 text-xs">Bricks (1000)</span>
+                        <span class="text-white font-bold text-sm">PKR 14,500</span>
+                        <span class="text-green-400 text-xs">&#9650; 0.8%</span>
+                    </div>
+                    <div class="flex items-center space-x-2 whitespace-nowrap">
+                        <span class="text-slate-400 text-xs">Sand (1 CFT)</span>
+                        <span class="text-white font-bold text-sm">PKR 65</span>
+                        <span class="text-slate-400 text-xs">&#8212; 0%</span>
+                    </div>
+                    <div class="flex items-center space-x-2 whitespace-nowrap">
+                        <span class="text-slate-400 text-xs">Gravel (1 CFT)</span>
+                        <span class="text-white font-bold text-sm">PKR 85</span>
+                        <span class="text-green-400 text-xs">&#9650; 1.2%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -297,7 +322,7 @@
     <script>
         const token = localStorage.getItem('pakbuild_token');
         const user = JSON.parse(localStorage.getItem('pakbuild_user'));
-        if (!token) { window.location.href = 'login.html'; }
+        if (!token) { window.location.href = 'login.html'; throw new Error('Redirecting to login'); }
 
         document.getElementById('userName').textContent = user?.name || 'User';
         document.getElementById('userAvatar').textContent = (user?.name || 'U')[0].toUpperCase();

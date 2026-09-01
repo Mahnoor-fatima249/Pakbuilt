@@ -3629,19 +3629,17 @@ function changeLanguage(lang) {
         }
 
         // --- 3D HOUSE MODEL BUILDER (MOVABLE IMAGE) ---
-        const texLoader = new THREE.TextureLoader();
-        texLoader.crossOrigin = 'anonymous';
+        const texLoader = (typeof THREE !== 'undefined') ? new THREE.TextureLoader() : null;
+        if (texLoader) texLoader.crossOrigin = 'anonymous';
 
         function createHouseModel(type, imageUrl) {
             const group = new THREE.Group();
-
-            if (!imageUrl) return group;
+            if (!texLoader || !imageUrl) return group;
 
             const mainTex = texLoader.load(imageUrl, (t) => {
                 t.minFilter = THREE.LinearFilter;
                 t.magFilter = THREE.LinearFilter;
             });
-            mainTex.crossOrigin = 'anonymous';
 
             // Main image plane - front
             const imgMat = new THREE.MeshBasicMaterial({ map: mainTex, side: THREE.DoubleSide });
@@ -4198,6 +4196,7 @@ function changeLanguage(lang) {
             }
 
             const btn = evt ? evt.target.closest('button') || evt.target : document.querySelector('[onclick*="confirmBooking"]');
+            if (!btn) return;
             btn.innerHTML = `
                 <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 <span>Booking...</span>
@@ -4614,7 +4613,7 @@ function handleContactSubmit(event) {
         if (cleanPhone && cleanPhone.length >= 10) {
             const waMsg = `Hello PakBuild Pro,\n\n*New Contact Form Message*\n*Name:* ${firstName} ${lastName}\n*Email:* ${email}\n*Phone:* ${cleanPhone}\n*Message:* ${message}`;
             setTimeout(() => {
-                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`, '_blank');
+                window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(waMsg)}`, '_blank');
             }, 1000);
         }
         btn.disabled = false;
@@ -4769,7 +4768,7 @@ function switchPlotSize(size) {
     currentMarla = size;
     if (currentViewMode === '3d') renderFloorPlan3D(size);
     else renderFloorPlan(size);
-    calculateCost();
+    try { calculateCost(); } catch(e) { console.error('calc error', e); }
     showToast(`Floor plan switched to ${size} Marla`);
 }
 
