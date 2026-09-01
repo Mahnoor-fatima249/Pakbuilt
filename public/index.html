@@ -336,6 +336,8 @@
     display: none; overflow: hidden;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #f1f5f9;
+}
+.chatbot-window.chat-open {
     animation: chatWindowOpen 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .chat-sidebar {
@@ -471,7 +473,7 @@
 </button>
 
 <!-- ================= CHAT WINDOW BOX ================= -->
-<div id="aiChatWindow" class="chatbot-window theme-dark">
+<div id="aiChatWindow" class="chatbot-window theme-dark" style="display: none;">
     
     <div style="display: flex; height: 100%; width: 100%;">
         <!-- Sidebar for Chat History & Search -->
@@ -1918,6 +1920,7 @@
                 appendBotMessage("Allah Hafiz! 👋 Chat inactive honay ki wajah se band ki ja rahi hai. Phir milenge!");
                 setTimeout(() => { 
                     chatWin.style.display = 'none'; 
+                    chatWin.classList.remove('chat-open');
                     const chatBtn = document.getElementById('aiChatBtn');
                     if (chatBtn) chatBtn.style.display = 'flex';
                 }, 1500);
@@ -1935,12 +1938,14 @@
         
         if (chatWin.style.display === 'none' || chatWin.style.display === '') {
             chatWin.style.display = 'block';
+            chatWin.classList.add('chat-open');
             if (chatBtn) chatBtn.style.display = 'none';
             const inputField = document.getElementById('chatInput');
             if (inputField) inputField.focus();
             resetInactivityTimer();
         } else {
             chatWin.style.display = 'none';
+            chatWin.classList.remove('chat-open');
             if (chatBtn) chatBtn.style.display = 'flex';
             if (inactivityTimer) clearTimeout(inactivityTimer);
             if (warningTimer) clearTimeout(warningTimer);
