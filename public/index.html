@@ -1605,6 +1605,20 @@
 
 <script>
     const BUSINESS_WHATSAPP = '923001234567'; // PakBuild Pro business number
+    
+    // --- GUARANTEED LOADING OVERLAY DISMISS ---
+    (function() {
+        function hideOverlay() {
+            var ov = document.getElementById('loadingOverlay');
+            if (ov) { ov.style.opacity = '0'; setTimeout(function() { ov.style.display = 'none'; }, 600); }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideOverlay);
+        } else {
+            hideOverlay();
+        }
+    })();
+
     const backToTopBtn = document.getElementById('backToTopBtn');
     let scrollTicking = false;
     window.addEventListener('scroll', () => {
@@ -4614,14 +4628,7 @@ function handleContactSubmit(event) {
     }
 }
 
-// --- LOADING OVERLAY FADE OUT ---
-window.addEventListener('DOMContentLoaded', () => {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-        overlay.style.opacity = '0';
-        setTimeout(() => overlay.style.display = 'none', 600);
-    }
-});
+// --- LOADING OVERLAY already handled at top of script block ---
 
 // --- ENHANCED DESIGN GALLERY CARD HOVER ---
 // (Applied via CSS .card-hover class in the renderDesignGallery template)
