@@ -158,7 +158,7 @@
         @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .animate-on-scroll { opacity: 1; transform: translateY(0); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
         @keyframes ticker { 0%{transform:translate3d(0,0,0)} 100%{transform:translate3d(-50%,0,0)} }
         .animate-ticker { display:inline-block; animation:ticker 30s linear infinite; }
@@ -167,7 +167,7 @@
         .slide:nth-child(1){animation-delay:0s} .slide:nth-child(2){animation-delay:6s} .slide:nth-child(3){animation-delay:12s}
         .slide:nth-child(4){animation-delay:18s} .slide:nth-child(5){animation-delay:24s} .slide:nth-child(6){animation-delay:30s}
         @keyframes slideAnimation { 0%{opacity:0;transform:scale(1)} 5%{opacity:1} 20%{opacity:1;transform:scale(1.05)} 25%{opacity:0} 100%{opacity:0} }
-        .reveal { opacity:0; transform:translateY(30px); transition:all 0.7s cubic-bezier(0.4,0,0.2,1); }
+        .reveal { opacity:1; transform:translateY(0); transition:all 0.7s cubic-bezier(0.4,0,0.2,1); }
         .reveal.active { opacity:1; transform:translateY(0); }
         @keyframes spin { to{transform:rotate(360deg)} }
         .card-hover { transition:transform 0.3s ease, box-shadow 0.3s ease; }
