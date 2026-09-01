@@ -12,7 +12,10 @@ module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
 
     try { await connectDB(); } catch (e) {
-        return res.status(500).json({ success: false, message: 'Database connection failed' });
+        return res.status(503).json({
+            success: false,
+            message: 'Admin panel requires database connection. Please configure MONGODB_URI in Vercel environment variables.'
+        });
     }
 
     const { action } = req.query;

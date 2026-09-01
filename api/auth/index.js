@@ -15,7 +15,10 @@ module.exports = async function handler(req, res) {
     try {
         await connectDB();
     } catch (error) {
-        return res.status(500).json({ success: false, message: 'Database connection failed' });
+        return res.status(503).json({
+            success: false,
+            message: 'Authentication requires database connection. Please configure MONGODB_URI in Vercel environment variables.'
+        });
     }
 
     const { action } = req.query;
@@ -32,7 +35,7 @@ module.exports = async function handler(req, res) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
             return res.status(201).json({
                 success: true, token,
-                user: { id: user._id, name: user.name, email: user.email, role: user.role }
+                user: { id: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role }
             });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
@@ -57,8 +60,24 @@ module.exports = async function handler(req, res) {
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
             return res.status(200).json({
                 success: true, token,
-                user: { id: user._id, name: user.name, email: user.email, role: user.role }
+                user: { id: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role }
             });
+        } catch (error) {
+            return res.status(500).json({ success: false, message: error.message });
+        }
+    }
+
+    // PUT /api/auth?action=update-phone
+    if (req.method === 'PUT' && action === 'update-phone') {
+        try {
+            const { verifyAuth } = require('../../lib/auth');
+            const user = await verifyAuth(req);
+            if (!user) return res.status(401).json({ success: false, message: 'Not authorized' });
+            const { phone } = req.body;
+            if (!phone) return res.status(400).json({ success: false, message: 'Phone number required' });
+            user.phone = phone;
+            await user.save();
+            return res.status(200).json({ success: true, phone: user.phone, message: 'Phone number updated successfully' });
         } catch (error) {
             return res.status(500).json({ success: false, message: error.message });
         }

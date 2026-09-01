@@ -1,8 +1,12 @@
 node_modules/
 .env
+backend/.env
 .vercel/
 *.mp4
 *.mp3
 backend/node_modules/
 package-lock.json
 backend/package-lock.json
+push-to-github.js
+
+.vercel

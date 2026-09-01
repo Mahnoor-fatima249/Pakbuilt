@@ -10,7 +10,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
 
     try { await connectDB(); } catch (e) {
-        return res.status(500).json({ success: false, message: 'Database connection failed' });
+        return res.status(200).json({ success: true, count: 0, rates: [], message: 'Database not configured' });
     }
 
     const { action } = req.query;
