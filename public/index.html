@@ -4991,6 +4991,7 @@ function handleContactSubmit(event) {
             document.getElementById('modalCategory').textContent = item.category.charAt(0).toUpperCase() + item.category.slice(1);
             document.getElementById('modalCurrentCategory').value = item.category;
             document.getElementById('modalCurrentImage').value = item.image;
+            document.getElementById('modalCurrentId').value = item.id;
             document.getElementById('modalPlotSize').textContent = item.plotSize || '-';
             document.getElementById('modalCoveredArea').textContent = item.coveredArea || '-';
             document.getElementById('modalBedrooms').textContent = (item.bedrooms || '-') + ' Bed';
@@ -5005,6 +5006,7 @@ function handleContactSubmit(event) {
                 zoomImg.style.top = '50%';
             }
             currentZoom = 1; panX = 0; panY = 0;
+            loadSimilarDesigns(id);
             if (startZoomed) {
                 switchModalTab('3d');
             } else {
@@ -5018,21 +5020,220 @@ function handleContactSubmit(event) {
         }
 
         function switchModalTab(tab) {
-            const tab2D = document.getElementById('modalTab2D');
-            const tab3D = document.getElementById('modalTab3D');
-            const content2D = document.getElementById('modalTab2DContent');
-            const content3D = document.getElementById('modalTab3DContent');
-            if (tab === '2d') {
-                tab2D.className = 'flex-1 py-2.5 text-xs font-semibold text-primary border-b-2 border-primary transition';
-                tab3D.className = 'flex-1 py-2.5 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-purple-400 transition flex items-center justify-center gap-1';
-                content2D.classList.remove('hidden');
-                content3D.classList.add('hidden');
-            } else {
-                tab2D.className = 'flex-1 py-2.5 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-primary transition';
-                tab3D.className = 'flex-1 py-2.5 text-xs font-semibold text-purple-400 border-b-2 border-purple-400 transition flex items-center justify-center gap-1';
-                content2D.classList.add('hidden');
-                content3D.classList.remove('hidden');
+            const tabs = ['2d','floor','ba','reviews','3d'];
+            const tabIds = { '2d':'modalTab2D', 'floor':'modalTabFloor', 'ba':'modalTabBA', 'reviews':'modalTabReviews', '3d':'modalTab3D' };
+            const contentIds = { '2d':'modalTab2DContent', 'floor':'modalTabFloorContent', 'ba':'modalTabBAContent', 'reviews':'modalTabReviewsContent', '3d':'modalTab3DContent' };
+            const activeColors = { '2d':'text-primary border-primary', 'floor':'text-blue-400 border-blue-400', 'ba':'text-amber-400 border-amber-400', 'reviews':'text-purple-400 border-purple-400', '3d':'text-cyan-400 border-cyan-400' };
+            tabs.forEach(t => {
+                const tabEl = document.getElementById(tabIds[t]);
+                const contentEl = document.getElementById(contentIds[t]);
+                if (t === tab) {
+                    tabEl.className = `flex-shrink-0 py-2.5 px-4 text-xs font-semibold border-b-2 transition ${activeColors[t]}`;
+                    contentEl.classList.remove('hidden');
+                } else {
+                    tabEl.className = `flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent transition`;
+                    contentEl.classList.add('hidden');
+                }
+            });
+            if (tab === 'floor') generateFloorPlan();
+            if (tab === 'ba') setupBeforeAfter();
+            if (tab === 'reviews') loadReviews();
+        }
+
+        // === FLOOR PLAN GENERATOR ===
+        function generateFloorPlan() {
+            const id = document.getElementById('modalCurrentId')?.value;
+            const item = homeDesignsData.find(d => d.id == id);
+            if (!item) return;
+            const beds = parseInt(item.bedrooms) || 4;
+            const baths = parseInt(item.bathrooms) || 3;
+            const svg = document.getElementById('floorPlanSVG');
+            const legend = document.getElementById('floorPlanLegend');
+            const colors = { bedroom:'#3b82f6', bathroom:'#06b6d4', kitchen:'#f59e0b', living:'#10b981', dining:'#8b5cf6', garage:'#64748b', garden:'#22c55e' };
+            let rooms = [];
+            let x = 10, y = 10;
+            const w = 380, h = 280;
+            rooms.push({ name:'Living Room', x:10, y:10, w:180, h:120, color:colors.living });
+            rooms.push({ name:'Kitchen', x:200, y:10, w:180, h:60, color:colors.kitchen });
+            rooms.push({ name:'Dining', x:200, y:80, w:180, h:50, color:colors.dining });
+            let bedW = Math.floor(360 / Math.min(beds, 4));
+            for (let i = 0; i < Math.min(beds, 6); i++) {
+                const col = i % Math.min(beds, 4);
+                const row = Math.floor(i / Math.min(beds, 4));
+                rooms.push({ name:`Bed ${i+1}`, x:10 + col * (bedW + 5), y:140 + row * 70, w:bedW - 5, h:60, color:colors.bedroom });
             }
+            for (let i = 0; i < Math.min(baths, 4); i++) {
+                rooms.push({ name:`Bath ${i+1}`, x:10 + i * 95, y:140 + Math.ceil(beds / Math.min(beds, 4)) * 70 + 10, w:85, h:40, color:colors.bathroom });
+            }
+            let svgContent = `<rect x="0" y="0" width="400" height="300" fill="none" stroke="#334155" stroke-width="3" rx="4"/>`;
+            rooms.forEach(r => {
+                svgContent += `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="${r.color}22" stroke="${r.color}" stroke-width="1.5" rx="3" class="floor-plan-room"/>`;
+                svgContent += `<text x="${r.x + r.w/2}" y="${r.y + r.h/2 - 4}" text-anchor="middle" fill="${r.color}" font-size="9" font-weight="600">${r.name}</text>`;
+                svgContent += `<text x="${r.x + r.w/2}" y="${r.y + r.h/2 + 8}" text-anchor="middle" fill="#94a3b8" font-size="7">${Math.round(r.w * r.h / 10)} sq.ft</text>`;
+            });
+            svg.innerHTML = svgContent;
+            legend.innerHTML = Object.entries(colors).map(([k,v]) => `<div class="flex items-center gap-1"><div class="w-2 h-2 rounded" style="background:${v}"></div><span class="text-[9px] text-slate-400 capitalize">${k}</span></div>`).join('');
+        }
+
+        // === BEFORE/AFTER SLIDER ===
+        function setupBeforeAfter() {
+            const slider = document.getElementById('baSlider');
+            const handle = document.getElementById('baHandle');
+            const beforeDiv = document.getElementById('baBeforeDiv');
+            const afterImg = document.getElementById('baAfterImg');
+            const beforeImg = document.getElementById('baBeforeImg');
+            const id = document.getElementById('modalCurrentId')?.value;
+            const item = homeDesignsData.find(d => d.id == id);
+            if (item) {
+                afterImg.src = item.image;
+                beforeImg.src = item.image;
+                beforeImg.style.filter = 'grayscale(100%) brightness(0.6)';
+            }
+            let isDragging = false;
+            const updateSlider = (e) => {
+                const rect = slider.getBoundingClientRect();
+                let x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+                x = Math.max(0, Math.min(rect.width, x));
+                const pct = (x / rect.width) * 100;
+                handle.style.left = pct + '%';
+                beforeDiv.style.width = pct + '%';
+            };
+            handle.onmousedown = () => isDragging = true;
+            handle.ontouchstart = () => isDragging = true;
+            document.onmousemove = (e) => { if (isDragging) updateSlider(e); };
+            document.ontouchmove = (e) => { if (isDragging) updateSlider(e); };
+            document.onmouseup = () => isDragging = false;
+            document.ontouchend = () => isDragging = false;
+            slider.onclick = (e) => { isDragging = true; updateSlider(e); isDragging = false; };
+        }
+
+        // === REVIEWS SYSTEM ===
+        let currentReviewRating = 0;
+        function getReviews(id) { try { return JSON.parse(localStorage.getItem('pb_design_reviews_' + id) || '[]'); } catch { return []; } }
+        function saveReviews(id, reviews) { localStorage.setItem('pb_design_reviews_' + id, JSON.stringify(reviews)); }
+        function setReviewRating(stars) {
+            currentReviewRating = stars;
+            document.querySelectorAll('#reviewStarsInput .review-star').forEach(s => {
+                s.classList.toggle('text-yellow-400', parseInt(s.dataset.star) <= stars);
+                s.classList.toggle('text-slate-600', parseInt(s.dataset.star) > stars);
+            });
+        }
+        function submitReview() {
+            const id = document.getElementById('modalCurrentId')?.value;
+            if (!id) return;
+            const name = document.getElementById('reviewNameInput').value.trim() || 'Anonymous';
+            const text = document.getElementById('reviewTextInput').value.trim();
+            if (!text || !currentReviewRating) { showToast('Please add rating and review', 'info'); return; }
+            const reviews = getReviews(id);
+            reviews.unshift({ name, text, rating: currentReviewRating, date: new Date().toLocaleDateString() });
+            saveReviews(id, reviews);
+            document.getElementById('reviewNameInput').value = '';
+            document.getElementById('reviewTextInput').value = '';
+            setReviewRating(0);
+            loadReviews();
+            showToast('Review added!', 'success');
+        }
+        function loadReviews() {
+            const id = document.getElementById('modalCurrentId')?.value;
+            if (!id) return;
+            const reviews = getReviews(id);
+            const list = document.getElementById('reviewsList');
+            const avgStars = document.getElementById('avgRatingStars');
+            const avgText = document.getElementById('avgRatingText');
+            const countEl = document.getElementById('reviewCount');
+            if (reviews.length === 0) {
+                avgStars.innerHTML = '';
+                avgText.textContent = '0';
+                countEl.textContent = '(0 reviews)';
+                list.innerHTML = '<p class="text-xs text-slate-500 text-center py-4">No reviews yet. Be the first!</p>';
+                return;
+            }
+            const avg = reviews.reduce((s,r) => s + r.rating, 0) / reviews.length;
+            avgText.textContent = avg.toFixed(1);
+            countEl.textContent = `(${reviews.length} reviews)`;
+            avgStars.innerHTML = Array(5).fill(0).map((_,i) => `<span class="text-sm ${i < Math.round(avg) ? 'text-yellow-400' : 'text-slate-600'}">★</span>`).join('');
+            list.innerHTML = reviews.map(r => `
+                <div class="bg-slate-800/30 rounded-xl p-3 border border-slate-700/30">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold text-white">${r.name}</span>
+                        <span class="text-[10px] text-slate-500">${r.date}</span>
+                    </div>
+                    <div class="flex gap-0.5 mb-1">${Array(5).fill(0).map((_,i) => `<span class="text-xs ${i < r.rating ? 'text-yellow-400' : 'text-slate-600'}">★</span>`).join('')}</div>
+                    <p class="text-xs text-slate-400">${r.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // === CALCULATE FROM DESIGN ===
+        function calculateFromDesign() {
+            const id = document.getElementById('modalCurrentId')?.value;
+            const item = homeDesignsData.find(d => d.id == id);
+            if (!item) return;
+            const plotMap = { '3 Marla': 3, '5 Marla': 5, '7 Marla': 7, '10 Marla': 10, '1 Kanal': 20 };
+            const plotSize = plotMap[item.plotSize] || 5;
+            localStorage.setItem('pb_calc_prefill', JSON.stringify({ plotSize, type: item.category === 'traditional' ? 'grey' : 'complete' }));
+            closeDesignModal();
+            document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+            showToast('Design loaded to calculator!', 'success');
+        }
+
+        // === DOWNLOAD PDF ===
+        function downloadDesignPDF() {
+            const id = document.getElementById('modalCurrentId')?.value;
+            const item = homeDesignsData.find(d => d.id == id);
+            if (!item) return;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(20);
+                doc.setTextColor(16, 185, 129);
+                doc.text('PakBuild Pro - Design Details', 20, 20);
+                doc.setDrawColor(16, 185, 129);
+                doc.line(20, 25, 190, 25);
+                doc.setFontSize(14);
+                doc.setTextColor(30, 30, 30);
+                doc.text(item.title, 20, 40);
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Category: ${item.category.toUpperCase()}`, 20, 50);
+                doc.text(`Plot Size: ${item.plotSize}`, 20, 58);
+                doc.text(`Covered Area: ${item.coveredArea}`, 20, 66);
+                doc.text(`Bedrooms: ${item.bedrooms} | Bathrooms: ${item.bathrooms}`, 20, 74);
+                doc.setFontSize(12);
+                doc.setTextColor(16, 185, 129);
+                doc.text(`Estimated Cost: ${item.estimatedCost}`, 20, 88);
+                doc.setFontSize(9);
+                doc.setTextColor(80, 80, 80);
+                const lines = doc.splitTextToSize(item.styleDesc || item.desc, 170);
+                doc.text(lines, 20, 102);
+                doc.setFontSize(8);
+                doc.setTextColor(150, 150, 150);
+                doc.text('Generated by PakBuild Pro | pakbuildpro.com', 20, 285);
+                doc.save(`${item.title.replace(/\s+/g, '_')}_PakBuild.pdf`);
+                showToast('PDF downloaded!', 'success');
+            } catch (e) {
+                showToast('PDF library loading...', 'info');
+            }
+        }
+
+        // === SIMILAR DESIGNS ===
+        function loadSimilarDesigns(id) {
+            const item = homeDesignsData.find(d => d.id == id);
+            if (!item) return;
+            const similar = homeDesignsData.filter(d => d.id !== id && (d.category === item.category || d.plotSize === item.plotSize)).slice(0, 4);
+            const section = document.getElementById('similarDesignsSection');
+            const grid = document.getElementById('similarDesignsGrid');
+            if (similar.length === 0) { section.classList.add('hidden'); return; }
+            section.classList.remove('hidden');
+            grid.innerHTML = similar.map(d => `
+                <div onclick="openDesignModal(${d.id})" class="flex-shrink-0 w-28 cursor-pointer group">
+                    <div class="h-16 rounded-lg overflow-hidden mb-1">
+                        <img src="${d.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="${d.title}">
+                    </div>
+                    <p class="text-[9px] text-white font-semibold truncate">${d.title}</p>
+                    <p class="text-[9px] text-primary font-bold">${d.estimatedCost}</p>
+                </div>
+            `).join('');
         }
 
         function closeDesignModal() {
@@ -5123,24 +5324,71 @@ function switchPlotSize(size) {
 
 <!-- Design Details Modal -->
 <div id="designModal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-200">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-200 scale-95 opacity-0" id="designModalContent" style="animation: modalIn 0.25s ease forwards;">
-        <style>@keyframes modalIn { to { transform: scale(1); opacity: 1; } }</style>
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto overflow-hidden transform transition-all duration-200 scale-95 opacity-0" id="designModalContent" style="animation: modalIn 0.25s ease forwards;">
+        <style>@keyframes modalIn { to { transform: scale(1); opacity: 1; } } .modal-tab-active { color: #10b981; border-bottom-color: #10b981; } .floor-plan-room { cursor: pointer; transition: all 0.2s; } .floor-plan-room:hover { filter: brightness(1.3); } .review-star { cursor: pointer; transition: transform 0.2s; } .review-star:hover { transform: scale(1.2); } .ba-slider { position: relative; overflow: hidden; cursor: col-resize; user-select: none; } .ba-slider .ba-before { position: absolute; inset: 0; overflow: hidden; } .ba-slider .ba-after { position: relative; } .ba-slider .ba-handle { position: absolute; top: 0; bottom: 0; width: 4px; background: white; cursor: col-resize; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.5); } .ba-slider .ba-handle::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 36px; height: 36px; background: white; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.3); } .ba-slider .ba-handle::after { content: '◀ ▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 10px; color: #333; white-space: nowrap; }</style>
         <div class="relative overflow-hidden">
             <!-- Tab Buttons -->
-            <div class="flex border-b border-slate-700 bg-slate-800/50">
-                <button id="modalTab2D" onclick="switchModalTab('2d')" class="flex-1 py-2.5 text-xs font-semibold text-primary border-b-2 border-primary transition">Photo</button>
-                <button id="modalTab3D" onclick="switchModalTab('3d')" class="flex-1 py-2.5 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-purple-400 transition flex items-center justify-center gap-1">
+            <div class="flex border-b border-slate-700 bg-slate-800/50 overflow-x-auto">
+                <button id="modalTab2D" onclick="switchModalTab('2d')" class="modal-tab-active flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent transition">Photo</button>
+                <button id="modalTabFloor" onclick="switchModalTab('floor')" class="flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-blue-400 transition">Floor Plan</button>
+                <button id="modalTabBA" onclick="switchModalTab('ba')" class="flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-amber-400 transition">Before/After</button>
+                <button id="modalTabReviews" onclick="switchModalTab('reviews')" class="flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-purple-400 transition">Reviews</button>
+                <button id="modalTab3D" onclick="switchModalTab('3d')" class="flex-shrink-0 py-2.5 px-4 text-xs font-semibold text-slate-400 border-b-2 border-transparent hover:text-cyan-400 transition flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
-                    Zoom View
+                    Zoom
                 </button>
             </div>
-            <!-- Image Tab -->
+            <!-- Photo Tab -->
             <div id="modalTab2DContent" class="relative h-56 overflow-hidden">
                 <img id="modalImage" src="" alt="" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent"></div>
                 <span id="modalBadge" class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-primary/90 text-white text-[10px] font-semibold backdrop-blur-sm"></span>
             </div>
-            <!-- Zoom/Pan Tab -->
+            <!-- Floor Plan Tab -->
+            <div id="modalTabFloorContent" class="hidden h-72 bg-slate-950 relative overflow-hidden p-4">
+                <div id="floorPlanContainer" class="w-full h-full flex items-center justify-center">
+                    <svg id="floorPlanSVG" viewBox="0 0 400 300" class="w-full h-full max-h-64" style="max-width:400px;"></svg>
+                </div>
+                <div id="floorPlanLegend" class="absolute bottom-2 left-2 right-2 flex flex-wrap gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-2"></div>
+            </div>
+            <!-- Before/After Tab -->
+            <div id="modalTabBAContent" class="hidden h-72 bg-slate-950 relative">
+                <div id="baSlider" class="ba-slider w-full h-full">
+                    <div class="ba-after w-full h-full">
+                        <img id="baAfterImg" src="" alt="After Construction" class="w-full h-full object-cover">
+                    </div>
+                    <div class="ba-before" id="baBeforeDiv" style="width:50%;">
+                        <img id="baBeforeImg" src="" alt="Before Construction" class="w-full h-full object-cover" style="min-width:400px;">
+                    </div>
+                    <div class="ba-handle" id="baHandle" style="left:50%;"></div>
+                </div>
+                <div class="absolute top-2 left-2 px-2 py-1 rounded bg-black/50 backdrop-blur-sm text-[10px] text-white font-semibold">Before</div>
+                <div class="absolute top-2 right-2 px-2 py-1 rounded bg-black/50 backdrop-blur-sm text-[10px] text-white font-semibold">After</div>
+            </div>
+            <!-- Reviews Tab -->
+            <div id="modalTabReviewsContent" class="hidden h-72 overflow-y-auto p-4 space-y-3">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <div id="avgRatingStars" class="flex gap-0.5"></div>
+                        <span id="avgRatingText" class="text-sm font-bold text-white">0</span>
+                        <span id="reviewCount" class="text-xs text-slate-400">(0 reviews)</span>
+                    </div>
+                </div>
+                <div id="reviewForm" class="bg-slate-800/50 rounded-xl p-3 space-y-2 border border-slate-700/50">
+                    <div class="flex items-center gap-1" id="reviewStarsInput">
+                        <span class="review-star text-2xl text-slate-600" data-star="1" onclick="setReviewRating(1)">★</span>
+                        <span class="review-star text-2xl text-slate-600" data-star="2" onclick="setReviewRating(2)">★</span>
+                        <span class="review-star text-2xl text-slate-600" data-star="3" onclick="setReviewRating(3)">★</span>
+                        <span class="review-star text-2xl text-slate-600" data-star="4" onclick="setReviewRating(4)">★</span>
+                        <span class="review-star text-2xl text-slate-600" data-star="5" onclick="setReviewRating(5)">★</span>
+                    </div>
+                    <input type="text" id="reviewNameInput" placeholder="Your name" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-primary">
+                    <textarea id="reviewTextInput" placeholder="Write your review..." rows="2" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-primary resize-none"></textarea>
+                    <button onclick="submitReview()" class="px-4 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primaryHover transition">Submit Review</button>
+                </div>
+                <div id="reviewsList" class="space-y-2"></div>
+            </div>
+            <!-- Zoom Tab -->
             <div id="modalTab3DContent" class="hidden h-80 bg-slate-950 relative overflow-hidden cursor-grab active:cursor-grabbing">
                 <img id="zoomImage" src="" alt="" class="absolute transition-none" style="transform-origin: 0 0; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(1);">
                 <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1.5 pointer-events-none">
@@ -5166,30 +5414,22 @@ function switchPlotSize(size) {
             <!-- Design Details Grid -->
             <div class="design-detail-grid" id="modalDetailsGrid">
                 <div class="design-detail-item">
-                    <div class="detail-icon">
-                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path></svg>
-                    </div>
+                    <div class="detail-icon"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path></svg></div>
                     <div class="detail-label">Plot Size</div>
                     <div class="detail-value" id="modalPlotSize">-</div>
                 </div>
                 <div class="design-detail-item">
-                    <div class="detail-icon">
-                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
-                    </div>
+                    <div class="detail-icon"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg></div>
                     <div class="detail-label">Covered Area</div>
                     <div class="detail-value" id="modalCoveredArea">-</div>
                 </div>
                 <div class="design-detail-item">
-                    <div class="detail-icon">
-                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    </div>
+                    <div class="detail-icon"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></div>
                     <div class="detail-label">Bedrooms</div>
                     <div class="detail-value" id="modalBedrooms">-</div>
                 </div>
                 <div class="design-detail-item">
-                    <div class="detail-icon">
-                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
-                    </div>
+                    <div class="detail-icon"><svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg></div>
                     <div class="detail-label">Bathrooms</div>
                     <div class="detail-value" id="modalBathrooms">-</div>
                 </div>
@@ -5215,14 +5455,34 @@ function switchPlotSize(size) {
                 <p id="modalStyleDesc" class="text-xs text-slate-300 leading-relaxed">-</p>
             </div>
 
+            <!-- Similar Designs -->
+            <div id="similarDesignsSection" class="hidden">
+                <h4 class="text-xs font-bold text-white mb-3 flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    Similar Designs
+                </h4>
+                <div id="similarDesignsGrid" class="flex gap-3 overflow-x-auto pb-2"></div>
+            </div>
+
             <input type="hidden" id="modalCurrentCategory">
             <input type="hidden" id="modalCurrentImage">
-            <div class="pt-1">
-                <button onclick="closeDesignModal()" class="w-full py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <span>Got it</span>
+            <input type="hidden" id="modalCurrentId">
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-3 pt-1">
+                <button onclick="calculateFromDesign()" class="py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold transition hover:shadow-lg hover:shadow-blue-500/30 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    Calculate Cost
+                </button>
+                <button onclick="downloadDesignPDF()" class="py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-purple-500 text-white text-xs font-semibold transition hover:shadow-lg hover:shadow-purple-500/30 flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Download PDF
                 </button>
             </div>
+            <button onclick="closeDesignModal()" class="w-full py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Got it</span>
+            </button>
         </div>
     </div>
 </div>
