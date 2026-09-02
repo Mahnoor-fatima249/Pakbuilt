@@ -735,52 +735,94 @@
         </div>
 
         <!-- Gradient Overlay for Readability -->
-        <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-slate-950/50 via-slate-950/70 to-slate-950/90"></div>
+        <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-slate-950/40 via-slate-950/65 to-slate-950/90"></div>
+
+        <!-- Floating Decorative Elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 rounded-full bg-primary/10 blur-2xl float hidden lg:block" style="animation-delay: 0s;"></div>
+        <div class="absolute bottom-32 right-16 w-32 h-32 rounded-full bg-blue-500/10 blur-3xl float hidden lg:block" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/3 right-8 w-16 h-16 rounded-full bg-purple-500/10 blur-2xl float hidden lg:block" style="animation-delay: 2s;"></div>
 
         <!-- Hero Content -->
         <div class="relative z-10 max-w-3xl px-4">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight" data-i18n="hero_title">
+            <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-xs text-slate-300 mb-6 animate-on-scroll" style="animation: fadeInUp 0.6s ease forwards;">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Pakistan's #1 Construction Cost Estimator
+            </div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 tracking-tight leading-tight" data-i18n="hero_title" style="animation: fadeInUp 0.8s ease forwards;">
                 Build Your <span class="gradient-text">Dream Home</span> in <span class="gradient-text">Pakistan</span>
             </h1>
-            <p class="text-slate-300 text-sm sm:text-base lg:text-lg mb-6 max-w-xl mx-auto" data-i18n="hero_subtitle">
+            <p class="text-slate-300 text-sm sm:text-base lg:text-lg mb-8 max-w-xl mx-auto leading-relaxed" data-i18n="hero_subtitle" style="animation: fadeInUp 1s ease forwards;">
                 Calculate accurate grey structure & finishing costs, view modern blueprints, and get instant material estimates.
             </p>
             <!-- Social Proof Strip -->
-            <div class="flex flex-wrap items-center justify-center gap-4 mb-6 text-sm text-slate-300">
-                <div class="flex items-center space-x-1">
+            <div class="flex flex-wrap items-center justify-center gap-5 mb-8 text-sm text-slate-300" style="animation: fadeInUp 1.2s ease forwards;">
+                <div class="flex items-center space-x-1 glass px-3 py-1.5 rounded-full">
                     <div class="flex -space-x-2">
                         <div class="w-7 h-7 rounded-full bg-emerald-600 border-2 border-slate-900 flex items-center justify-center text-xs font-bold">A</div>
                         <div class="w-7 h-7 rounded-full bg-teal-600 border-2 border-slate-900 flex items-center justify-center text-xs font-bold">F</div>
                         <div class="w-7 h-7 rounded-full bg-cyan-600 border-2 border-slate-900 flex items-center justify-center text-xs font-bold">K</div>
+                        <div class="w-7 h-7 rounded-full bg-blue-600 border-2 border-slate-900 flex items-center justify-center text-[10px] font-bold">+</div>
                     </div>
-                    <span class="ml-1">1000+ homeowners trust us</span>
+                    <span class="ml-1 text-xs">1000+ homeowners trust us</span>
                 </div>
-                <div class="flex items-center space-x-1">
-                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    <span>4.8/5 rating</span>
+                <div class="flex items-center space-x-1 glass px-3 py-1.5 rounded-full">
+                    <div class="flex gap-0.5">
+                        <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <span class="text-xs font-semibold">4.8/5</span>
                 </div>
             </div>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="#calculator" class="relative bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-xl font-semibold shadow-xl shadow-primary/40 hover:shadow-2xl hover:shadow-primary/50 transition transform hover:-translate-y-1" data-i18n="hero_btn">
+            <div class="flex flex-wrap justify-center gap-4" style="animation: fadeInUp 1.4s ease forwards;">
+                <a href="#calculator" class="relative bg-primary hover:bg-primaryHover text-white px-8 py-3.5 rounded-xl font-semibold shadow-xl shadow-primary/40 hover:shadow-2xl hover:shadow-primary/50 transition transform hover:-translate-y-1 flex items-center gap-2" data-i18n="hero_btn">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                     Calculate Cost Now
                 </a>
-                <a href="#designs" class="glass hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold transition shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5 transform" data-i18n="nav_designs">
+                <a href="#designs" class="glass hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold transition shadow-lg shadow-black/20 hover:shadow-xl hover:-translate-y-0.5 transform flex items-center gap-2" data-i18n="nav_designs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     View Designs
                 </a>
             </div>
-            <div class="mt-6 inline-flex items-center space-x-2 glass px-4 py-2 rounded-full text-xs text-slate-300 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
-                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <div class="mt-8 inline-flex items-center space-x-2 glass px-4 py-2 rounded-full text-xs text-slate-300 opacity-60 hover:opacity-100 transition-opacity cursor-pointer animate-on-scroll" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">
                 <span>Scroll to explore</span>
+                <svg class="w-4 h-4 text-primary animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
             </div>
         </div>
     </section>
 <!-- ANIMATED STATS COUNTER -->
-<section id="stats" class="py-12 bg-slate-900/50 border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-        <div class="reveal"><div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="500">0</div><div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Projects Completed</div></div>
-        <div class="reveal"><div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="1000">0</div><div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Happy Clients</div></div>
-        <div class="reveal"><div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="50">0</div><div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Cities Served</div></div>
-        <div class="reveal"><div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="98">0</div><div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Satisfaction %</div></div>
+<section id="stats" class="py-16 bg-slate-900/50 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="reveal text-center glass p-5 rounded-2xl hover:border-primary/30 transition-all duration-300 group">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+            </div>
+            <div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="500">0</div>
+            <div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Projects Done</div>
+        </div>
+        <div class="reveal text-center glass p-5 rounded-2xl hover:border-primary/30 transition-all duration-300 group" style="animation-delay: 0.1s;">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="1000">0</div>
+            <div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Happy Clients</div>
+        </div>
+        <div class="reveal text-center glass p-5 rounded-2xl hover:border-primary/30 transition-all duration-300 group" style="animation-delay: 0.2s;">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </div>
+            <div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="50">0</div>
+            <div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Cities Served</div>
+        </div>
+        <div class="reveal text-center glass p-5 rounded-2xl hover:border-primary/30 transition-all duration-300 group" style="animation-delay: 0.3s;">
+            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div class="text-3xl lg:text-4xl font-extrabold text-primary counter" data-target="98">0</div>
+            <div class="text-xs text-slate-400 mt-2 font-semibold uppercase tracking-wider">Satisfaction %</div>
+        </div>
     </div>
 </section>
 
@@ -1216,7 +1258,7 @@
                 <div>
                     <div class="flex items-center gap-3">
                         <h3 class="text-xl font-bold text-white" data-i18n="design_gallery_title">Pakistani Home Design & Elevation Gallery</h3>
-                        <span id="designCountBadge" class="design-count-badge">15 Designs</span>
+                        <span id="designCountBadge" class="design-count-badge">20 Designs</span>
                     </div>
                     <p class="text-xs text-slate-400 mt-1" data-i18n="design_gallery_subtitle">Explore modern front elevations, contemporary interiors, and traditional styles.</p>
                 </div>
@@ -1412,77 +1454,130 @@
         </form>
     </div>
 </section>
+    <!-- Why Choose Us -->
+<section class="py-16 bg-slate-900/30 border-b border-slate-800 animate-on-scroll">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-xs text-primary mb-4">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Why Choose Us
+            </div>
+            <h2 class="text-3xl lg:text-4xl font-extrabold mb-3 text-white">Trusted by <span class="gradient-text">500+ Families</span></h2>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto">Pakistan's most accurate construction cost calculator with real market rates</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="glass p-6 rounded-2xl text-center hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-sm mb-2">Accurate Costs</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Real-time market rates for Lahore, Karachi, Islamabad & all major cities</p>
+            </div>
+            <div class="glass p-6 rounded-2xl text-center hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1" style="animation-delay: 0.1s;">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-sm mb-2">20+ Designs</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Modern & traditional Pakistani home designs with detailed floor plans</p>
+            </div>
+            <div class="glass p-6 rounded-2xl text-center hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1" style="animation-delay: 0.2s;">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-sm mb-2">Multi-Language</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">English, Urdu, Punjabi, Pashto, Sindhi, Arabic & Farsi support</p>
+            </div>
+            <div class="glass p-6 rounded-2xl text-center hover:border-primary/30 transition-all duration-300 group hover:-translate-y-1" style="animation-delay: 0.3s;">
+                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-white font-bold text-sm mb-2">Instant Results</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Get accurate cost breakdowns in seconds, not hours</p>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Testimonials Section -->
 <section id="testimonials" class="py-16 bg-slate-900/50 border-b border-slate-800 animate-on-scroll">
     <div class="max-w-7xl mx-auto px-4 text-center">
-        <h2 class="text-3xl lg:text-4xl font-extrabold mb-3 text-primary" data-i18n="testimonial_title">What Our Clients Say</h2>
+        <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-xs text-primary mb-4">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+            Testimonials
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-extrabold mb-3 text-white" data-i18n="testimonial_title">What Our <span class="gradient-text">Clients Say</span></h2>
         <p class="text-slate-400 mb-10 text-sm" data-i18n="testimonial_subtitle">Trusted by hundreds of homeowners across Pakistan</p>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
             
             <!-- Review Card 1 -->
-            <div class="group bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+            <div class="group glass p-6 rounded-2xl hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                 <div class="absolute top-3 right-4 opacity-[0.04] text-7xl text-primary font-serif pointer-events-none">&#8220;</div>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">UT</div>
                     <div>
-                        <div class="flex gap-0.5 text-amber-400">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
+                        <h4 class="text-white font-semibold text-sm">Usman Tariq</h4>
+                        <span class="text-slate-500 text-xs" data-i18n="client_1_loc">Lahore</span>
+                    </div>
+                    <div class="ml-auto flex gap-0.5 text-amber-400">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                     </div>
                 </div>
-                <p class="text-slate-300 text-sm leading-relaxed mb-5 relative z-10" data-i18n="review_1">"PakBuild's cost calculator was amazingly accurate for my 5-marla grey structure in Lahore. Saved me from unexpected budget surprises!"</p>
-                <div class="relative z-10">
-                    <h4 class="text-white font-semibold text-sm">Usman Tariq</h4>
-                    <span class="text-slate-500 text-xs" data-i18n="client_1_loc">Lahore</span>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4 relative z-10" data-i18n="review_1">"PakBuild's cost calculator was amazingly accurate for my 5-marla grey structure in Lahore. Saved me from unexpected budget surprises!"</p>
+                <div class="flex items-center gap-2 text-xs text-primary">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span class="font-semibold">5 Marla Grey Structure</span>
                 </div>
             </div>
 
             <!-- Review Card 2 -->
-            <div class="group bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+            <div class="group glass p-6 rounded-2xl hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                 <div class="absolute top-3 right-4 opacity-[0.04] text-7xl text-primary font-serif pointer-events-none">&#8220;</div>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">AM</div>
                     <div>
-                        <div class="flex gap-0.5 text-amber-400">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
+                        <h4 class="text-white font-semibold text-sm">Ayesha Malik</h4>
+                        <span class="text-slate-500 text-xs" data-i18n="client_2_loc">Islamabad</span>
+                    </div>
+                    <div class="ml-auto flex gap-0.5 text-amber-400">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                     </div>
                 </div>
-                <p class="text-slate-300 text-sm leading-relaxed mb-5 relative z-10" data-i18n="review_2">"The floor plans and material estimations gave me complete clarity before hiring a contractor. Highly recommended for anyone building a home."</p>
-                <div class="relative z-10">
-                    <h4 class="text-white font-semibold text-sm">Ayesha Malik</h4>
-                    <span class="text-slate-500 text-xs" data-i18n="client_2_loc">Islamabad</span>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4 relative z-10" data-i18n="review_2">"The floor plans and material estimations gave me complete clarity before hiring a contractor. Highly recommended for anyone building a home."</p>
+                <div class="flex items-center gap-2 text-xs text-primary">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span class="font-semibold">10 Marla Complete Finishing</span>
                 </div>
             </div>
 
             <!-- Review Card 3 -->
-            <div class="group bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden sm:col-span-2 lg:col-span-1">
+            <div class="group glass p-6 rounded-2xl hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                 <div class="absolute top-3 right-4 opacity-[0.04] text-7xl text-primary font-serif pointer-events-none">&#8220;</div>
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-11 h-11 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">BA</div>
                     <div>
-                        <div class="flex gap-0.5 text-amber-400">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                        </div>
+                        <h4 class="text-white font-semibold text-sm">Bilal Ahmed</h4>
+                        <span class="text-slate-500 text-xs" data-i18n="client_3_loc">Karachi</span>
+                    </div>
+                    <div class="ml-auto flex gap-0.5 text-amber-400">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                     </div>
                 </div>
-                <p class="text-slate-300 text-sm leading-relaxed mb-5 relative z-10" data-i18n="review_3">"Very clean interface and multi-language support made it super easy for my father to understand the estimates in Urdu. Great job!"</p>
-                <div class="relative z-10">
-                    <h4 class="text-white font-semibold text-sm">Bilal Ahmed</h4>
-                    <span class="text-slate-500 text-xs" data-i18n="client_3_loc">Karachi</span>
+                <p class="text-slate-300 text-sm leading-relaxed mb-4 relative z-10" data-i18n="review_3">"Very clean interface and multi-language support made it super easy for my father to understand the estimates in Urdu. Great job!"</p>
+                <div class="flex items-center gap-2 text-xs text-primary">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span class="font-semibold">7 Marla Full Turnkey</span>
                 </div>
             </div>
 
