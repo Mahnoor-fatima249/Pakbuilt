@@ -1464,6 +1464,177 @@
 </script>
     </div>
 </section>
+
+<!-- ===================== NEW FEATURE: USER REVIEWS & RATINGS ===================== -->
+<section id="user-reviews" class="max-w-7xl mx-auto px-4 py-12 reveal animate-on-scroll">
+    <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-primary/15 rounded-xl">
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Rate & Review</h3>
+                    <p class="text-xs text-slate-400 mt-1">Share your experience and read reviews from other homeowners.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-primary" id="avgRating">4.8</span>
+                <div class="flex text-amber-400" id="avgStars">★★★★★</div>
+                <span class="text-xs text-slate-400" id="totalReviews">(3 reviews)</span>
+            </div>
+        </div>
+
+        <!-- Review Submission Form -->
+        <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Write a Review
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Name</label>
+                    <input type="text" id="reviewName" placeholder="e.g. Ahmed Khan" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">City</label>
+                    <select id="reviewCity" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary">
+                        <option value="Lahore">Lahore</option>
+                        <option value="Karachi">Karachi</option>
+                        <option value="Islamabad">Islamabad</option>
+                        <option value="Rawalpindi">Rawalpindi</option>
+                        <option value="Faisalabad">Faisalabad</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Rating</label>
+                <div id="reviewStars" class="flex gap-1 cursor-pointer text-2xl text-slate-600">
+                    <span onclick="setReviewRating(1)" onmouseenter="previewRating(1)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(2)" onmouseenter="previewRating(2)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(3)" onmouseenter="previewRating(3)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(4)" onmouseenter="previewRating(4)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(5)" onmouseenter="previewRating(5)" onmouseleave="resetRatingPreview()">★</span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Review</label>
+                <textarea id="reviewText" rows="3" placeholder="Tell us about your experience with PakBuild Pro..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary resize-vertical"></textarea>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="submitReview()" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Submit Review
+                </button>
+                <span class="text-xs text-slate-500">Your review will be displayed publicly.</span>
+            </div>
+        </div>
+
+        <!-- Reviews List -->
+        <div id="reviewsList" class="space-y-4"></div>
+    </div>
+</section>
+
+<!-- ===================== NEW FEATURE: COMPARE DESIGNS ===================== -->
+<section id="compare-designs" class="max-w-7xl mx-auto px-4 py-12 reveal animate-on-scroll">
+    <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-primary/15 rounded-xl">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">Compare Designs</h3>
+                <p class="text-xs text-slate-400 mt-1">Select two designs side-by-side to compare features and costs.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Design Selector 1 -->
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Design 1</label>
+                <select id="compareSelect1" onchange="updateComparison()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-primary"></select>
+                <div id="compareCard1" class="hidden space-y-3"></div>
+            </div>
+            <!-- Design Selector 2 -->
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Design 2</label>
+                <select id="compareSelect2" onchange="updateComparison()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-primary"></select>
+                <div id="compareCard2" class="hidden space-y-3"></div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div id="comparisonTable" class="hidden bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden">
+            <table class="w-full text-xs">
+                <thead><tr class="border-b border-slate-800/60 bg-slate-800/30">
+                    <th class="text-left text-slate-400 font-semibold px-5 py-3">Feature</th>
+                    <th class="text-right text-primary font-semibold px-5 py-3">Design 1</th>
+                    <th class="text-right text-purple-400 font-semibold px-5 py-3">Design 2</th>
+                </tr></thead>
+                <tbody id="comparisonBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== NEW FEATURE: BLOG SECTION ===================== -->
+<section id="blog" class="max-w-7xl mx-auto px-4 py-12 reveal animate-on-scroll">
+    <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-primary/15 rounded-xl">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">Construction Tips & Guides</h3>
+                <p class="text-xs text-slate-400 mt-1">Expert advice for building your dream home in Pakistan.</p>
+            </div>
+        </div>
+
+        <div id="blogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+</section>
+
+<!-- BLOG MODAL -->
+<div id="blogModal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+        <div class="sticky top-0 bg-slate-900 border-b border-slate-700 p-4 flex items-center justify-between z-10">
+            <h3 id="blogModalTitle" class="text-lg font-bold text-white"></h3>
+            <button onclick="closeBlogModal()" class="text-slate-400 hover:text-white transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <div id="blogModalContent" class="p-6 space-y-4"></div>
+    </div>
+</div>
+
+<!-- ===================== NEW FEATURE: PRICE NOTIFICATION BELL ===================== -->
+<div id="priceNotifyBtn" onclick="togglePriceNotification()" style="position:fixed;top:50%;right:0;z-index:9997;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:12px 10px;border-radius:12px 0 0 12px;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,0.3);writing-mode:vertical-rl;text-orientation:mixed;font-size:11px;font-weight:700;letter-spacing:0.5px;transition:all 0.3s;" onmouseenter="this.style.paddingRight='16px'" onmouseleave="this.style.paddingRight='10px'">
+    🔔 PRICE ALERTS
+</div>
+
+<div id="priceNotifyPanel" class="hidden fixed top-0 right-0 z-[9998] h-full w-80 max-w-[90vw] bg-slate-900 border-l border-slate-700 shadow-2xl transition-transform duration-300" style="transform:translateX(100%);">
+    <div class="h-full flex flex-col">
+        <div class="p-5 border-b border-slate-700 flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🔔</span>
+                <h3 class="text-sm font-bold text-white">Price Alerts</h3>
+            </div>
+            <button onclick="togglePriceNotification()" class="text-slate-400 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="priceAlertsList"></div>
+        <div class="p-4 border-t border-slate-700 space-y-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase">Subscribe to Alerts</h4>
+            <input type="email" id="alertEmail" placeholder="your@email.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+            <div class="flex flex-wrap gap-2" id="alertMaterialChecks">
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="cement" checked class="accent-amber-500"> Cement</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="steel" checked class="accent-amber-500"> Steel</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="bricks" class="accent-amber-500"> Bricks</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="sand" class="accent-amber-500"> Sand</label>
+            </div>
+            <button onclick="subscribePriceAlert()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white text-xs font-semibold transition">Subscribe to Alerts</button>
+        </div>
+    </div>
+</div>
+
 <!-- 3-COLUMN FOOTER -->
 <footer class="bg-slate-900/80 border-t border-slate-800 py-12 px-4">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -4334,13 +4505,17 @@ function changeLanguage(lang) {
             }
         }
 
-        // Initialize on DOM ready (not window.onload - CDN blocks prevent onload from firing)
-        document.addEventListener('DOMContentLoaded', () => {
-            try { calculateCost(); } catch(e) { console.error('calc error', e); }
-            try { initCalendar(); } catch(e) { console.error('calendar error', e); }
-            try { renderDesignGallery('all'); } catch(e) { console.error('gallery error', e); }
-            try { renderFloorPlan3D(5); } catch(e) { console.error('floorplan 3d error', e); }
-        });
+// Initialize on DOM ready (not window.onload - CDN blocks prevent onload from firing)
+document.addEventListener('DOMContentLoaded', () => {
+    try { calculateCost(); } catch(e) { console.error('calc error', e); }
+    try { initCalendar(); } catch(e) { console.error('calendar error', e); }
+    try { renderDesignGallery('all'); } catch(e) { console.error('gallery error', e); }
+    try { renderFloorPlan3D(5); } catch(e) { console.error('floorplan 3d error', e); }
+    try { loadReviews(); } catch(e) { console.error('reviews error', e); }
+    try { initCompareDesigns(); } catch(e) { console.error('compare error', e); }
+    try { renderBlogPosts(); } catch(e) { console.error('blog error', e); }
+    try { renderPriceAlerts(); } catch(e) { console.error('alerts error', e); }
+});
 
 function handleContractorInquiry(event) {
     event.preventDefault();
@@ -4713,6 +4888,379 @@ window.addEventListener('DOMContentLoaded', () => {
 document.getElementById('designModal')?.addEventListener('click', function(e) {
     if (e.target === this) closeDesignModal();
 });
+
+// ===================== FEATURE: USER REVIEWS & RATINGS =====================
+let reviewRating = 0;
+const defaultReviews = [
+    { name: "Usman Tariq", city: "Lahore", rating: 5, text: "PakBuild Pro ka calculator bohat accurate hai! Mere 5 marla ghar ka estimate bilkul sahi nikla.", date: "2026-08-15" },
+    { name: "Ayesha Malik", city: "Islamabad", rating: 5, text: "Floor plans aur material estimates ne mujhe contractor hire karne se pehle complete clarity de di. Highly recommended!", date: "2026-08-20" },
+    { name: "Bilal Ahmed", city: "Karachi", rating: 4, text: "Bohat clean interface hai aur multi-language support father ke liye Urdu mein samajhna easy bana diya.", date: "2026-08-25" }
+];
+
+function loadReviews() {
+    let reviews = JSON.parse(localStorage.getItem('pb_reviews') || 'null');
+    if (!reviews) { reviews = defaultReviews; localStorage.setItem('pb_reviews', JSON.stringify(reviews)); }
+    renderReviews(reviews);
+}
+
+function renderReviews(reviews) {
+    const list = document.getElementById('reviewsList');
+    if (!list) return;
+    list.innerHTML = '';
+    let totalRating = 0;
+    reviews.forEach(r => {
+        totalRating += r.rating;
+        const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const initials = r.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+        const colors = ['#059669', '#6366f1', '#f59e0b', '#ec4899', '#3b82f6'];
+        const bgColor = colors[r.name.length % colors.length];
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 space-y-2';
+        card.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div style="width:36px;height:36px;border-radius:50%;background:${bgColor};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0;">${initials}</div>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-bold text-white">${r.name}</span>
+                        <span class="text-xs text-slate-500">${r.city}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-400 text-xs">${stars}</span>
+                        <span class="text-[10px] text-slate-500">${r.date || ''}</span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${r.text}</p>
+        `;
+        list.appendChild(card);
+    });
+    const avg = (totalRating / reviews.length).toFixed(1);
+    document.getElementById('avgRating').textContent = avg;
+    document.getElementById('avgStars').textContent = '★'.repeat(Math.round(avg)) + '☆'.repeat(5 - Math.round(avg));
+    document.getElementById('totalReviews').textContent = `(${reviews.length} reviews)`;
+}
+
+function previewRating(n) {
+    const stars = document.getElementById('reviewStars').children;
+    for (let i = 0; i < 5; i++) { stars[i].style.color = i < n ? '#f59e0b' : '#475569'; }
+}
+function resetRatingPreview() {
+    const stars = document.getElementById('reviewStars').children;
+    for (let i = 0; i < 5; i++) { stars[i].style.color = i < reviewRating ? '#f59e0b' : '#475569'; }
+}
+function setReviewRating(n) {
+    reviewRating = n;
+    previewRating(n);
+}
+function submitReview() {
+    const name = document.getElementById('reviewName').value.trim();
+    const city = document.getElementById('reviewCity').value;
+    const text = document.getElementById('reviewText').value.trim();
+    if (!name || !text || !reviewRating) { showToast("Please fill in your name, rating, and review."); return; }
+    const reviews = JSON.parse(localStorage.getItem('pb_reviews') || '[]');
+    const newReview = { name, city, rating: reviewRating, text, date: new Date().toISOString().split('T')[0] };
+    reviews.unshift(newReview);
+    localStorage.setItem('pb_reviews', JSON.stringify(reviews));
+    renderReviews(reviews);
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    reviewRating = 0;
+    resetRatingPreview();
+    showToast("Thank you! Your review has been submitted.");
+}
+
+// ===================== FEATURE: COMPARE DESIGNS =====================
+function initCompareDesigns() {
+    const sel1 = document.getElementById('compareSelect1');
+    const sel2 = document.getElementById('compareSelect2');
+    if (!sel1 || !sel2) return;
+    sel1.innerHTML = '';
+    sel2.innerHTML = '';
+    homeDesignsData.forEach((d, i) => {
+        sel1.innerHTML += `<option value="${i}">${d.title}</option>`;
+        sel2.innerHTML += `<option value="${i}">${d.title}</option>`;
+    });
+    if (homeDesignsData.length > 1) sel2.value = '1';
+    updateComparison();
+}
+
+function updateComparison() {
+    const i1 = parseInt(document.getElementById('compareSelect1').value);
+    const i2 = parseInt(document.getElementById('compareSelect2').value);
+    const d1 = homeDesignsData[i1];
+    const d2 = homeDesignsData[i2];
+    if (!d1 || !d2) return;
+
+    renderCompareCard('compareCard1', d1);
+    renderCompareCard('compareCard2', d2);
+
+    const tbody = document.getElementById('comparisonBody');
+    const table = document.getElementById('comparisonTable');
+    table.classList.remove('hidden');
+
+    const features = [
+        ['Category', d1.category, d2.category],
+        ['Plot Size', d1.plotSize, d2.plotSize],
+        ['Covered Area', d1.coveredArea, d2.coveredArea],
+        ['Bedrooms', d1.bedrooms, d2.bedrooms],
+        ['Bathrooms', d1.bathrooms, d2.bathrooms],
+        ['Estimated Cost', d1.estimatedCost, d2.estimatedCost],
+        ['Badge', d1.badge, d2.badge],
+    ];
+
+    tbody.innerHTML = features.map(([label, v1, v2]) => `
+        <tr class="border-b border-slate-800/30">
+            <td class="px-5 py-3 text-slate-400 font-medium">${label}</td>
+            <td class="px-5 py-3 text-right text-white">${v1}</td>
+            <td class="px-5 py-3 text-right text-purple-300">${v2}</td>
+        </tr>
+    `).join('');
+}
+
+function renderCompareCard(containerId, design) {
+    const el = document.getElementById(containerId);
+    el.classList.remove('hidden');
+    el.innerHTML = `
+        <img src="${design.image}" alt="${design.title}" class="w-full h-36 object-cover rounded-xl">
+        <h4 class="text-sm font-bold text-white">${design.title}</h4>
+        <p class="text-[11px] text-slate-400 line-clamp-2">${design.desc}</p>
+        <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-semibold">${design.plotSize}</span>
+            <span class="px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-400 text-[10px] font-semibold">${design.estimatedCost}</span>
+        </div>
+    `;
+}
+
+// ===================== FEATURE: BLOG SECTION =====================
+const blogPosts = [
+    {
+        title: "5 Marla House Construction Guide 2026",
+        category: "Guide",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+        date: "Aug 28, 2026",
+        readTime: "5 min read",
+        excerpt: "Complete step-by-step guide for building a 5 marla house in Pakistan, from foundation to finishing.",
+        content: `<h4 class="text-base font-bold text-white">Step 1: Planning & Design</h4>
+<p class="text-xs text-slate-300">Start with a proper floor plan. Decide the number of bedrooms, bathrooms, and kitchen placement. A 5 marla plot (1,125 sq ft) typically fits 2 bedrooms, 1 bathroom, kitchen, and a small lounge.</p>
+<h4 class="text-base font-bold text-white mt-4">Step 2: Foundation</h4>
+<p class="text-xs text-slate-300">Foundation depth should be 4-6 feet. Use PCC (Plain Concrete) followed by RCC (Reinforced Cement Concrete). Cost: PKR 4-6 Lakh.</p>
+<h4 class="text-base font-bold text-white mt-4">Step 3: Grey Structure</h4>
+<p class="text-xs text-slate-300">Includes brick masonry, roof slab, plaster, and basic plumbing. Use Grade-60 steel and Awal quality bricks. Cost: PKR 25-32 Lakh.</p>
+<h4 class="text-base font-bold text-white mt-4">Step 4: Finishing</h4>
+<p class="text-xs text-slate-300">Tiles, paint, woodwork, fixtures. Choose porcelain tiles for durability. Use emulsion paint (2 coats). Cost: PKR 30-45 Lakh.</p>
+<h4 class="text-base font-bold text-white mt-4">Total Timeline: 5-7 months</h4>`
+    },
+    {
+        title: "How to Save 20% on Construction Costs",
+        category: "Tips",
+        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=600&q=80",
+        date: "Aug 20, 2026",
+        readTime: "4 min read",
+        excerpt: "Smart strategies to reduce your construction budget without compromising on quality.",
+        content: `<h4 class="text-base font-bold text-white">1. Buy Materials Direct</h4>
+<p class="text-xs text-slate-300">Purchase cement, steel, and bricks directly from dealers. Middlemen add 10-15% markup. Bulk orders can save additional 3-5%.</p>
+<h4 class="text-base font-bold text-white mt-4">2. Simple Design = Less Cost</h4>
+<p class="text-xs text-slate-300">Complex designs require more labor and material. A rectangular house is 15-20% cheaper to build than an irregular shape.</p>
+<h4 class="text-base font-bold text-white mt-4">3. Phased Construction</h4>
+<p class="text-xs text-slate-300">Build ground floor first, finish it, then add the second floor later. This spreads the cost over time.</p>
+<h4 class="text-base font-bold text-white mt-4">4. Compare 3+ Quotations</h4>
+<p class="text-xs text-slate-300">Always get at least 3 contractor quotations. Compare rates, timelines, and references before hiring.</p>`
+    },
+    {
+        title: "Earthquake-Safe Construction in Pakistan",
+        category: "Safety",
+        image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=600&q=80",
+        date: "Aug 15, 2026",
+        readTime: "6 min read",
+        excerpt: "Essential guidelines for building earthquake-resistant homes in Pakistan's seismic zones.",
+        content: `<h4 class="text-base font-bold text-white">Why Seismic Compliance Matters</h4>
+<p class="text-xs text-slate-300">Pakistan lies in a high seismic zone. The 2005 earthquake destroyed over 500,000 homes. Modern building codes can prevent this.</p>
+<h4 class="text-base font-bold text-white mt-4">Key Requirements</h4>
+<ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+<li>Use Grade-60 steel (high tensile strength)</li>
+<li>RCC frame structure (avoid load-bearing walls)</li>
+<li>Column spacing: maximum 12-14 ft apart</li>
+<li>Beam size: minimum 12" x 18" for 5 Marla</li>
+<li>Foundation depth: minimum 4-6 ft</li>
+</ul>
+<h4 class="text-base font-bold text-white mt-4">Additional Cost: 20-30%</h4>
+<p class="text-xs text-slate-300">Seismic compliance adds extra steel (+15-20%) and better foundation (+10-15%). Total increase is 20-30% but saves lives.</p>`
+    },
+    {
+        title: "Top 5 Construction Material Price Trends 2026",
+        category: "Market",
+        image: "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=600&q=80",
+        date: "Aug 10, 2026",
+        readTime: "3 min read",
+        excerpt: "Current market trends for cement, steel, bricks, sand and gravel in Pakistan.",
+        content: `<h4 class="text-base font-bold text-white">1. Cement</h4>
+<p class="text-xs text-slate-300">Prices stable at PKR 1,320-1,400/bag. Supply chain has normalized after recent disruptions.</p>
+<h4 class="text-base font-bold text-white mt-4">2. Steel (Sariya)</h4>
+<p class="text-xs text-slate-300">Prices rose +2.4% due to increased commercial demand. Currently PKR 275,000-285,000/ton.</p>
+<h4 class="text-base font-bold text-white mt-4">3. Bricks</h4>
+<p class="text-xs text-slate-300">Awal quality: PKR 14,000-15,500/1000. Fuel costs impacting kiln rates (+1.5%).</p>
+<h4 class="text-base font-bold text-white mt-4">4. Sand</h4>
+<p class="text-xs text-slate-300">Ravi sand: PKR 45-55/CFT. Chenab sand preferred for plastering: PKR 55-70/CFT.</p>
+<h4 class="text-base font-bold text-white mt-4">5. Gravel</h4>
+<p class="text-xs text-slate-300">Mangla crush: PKR 65-80/CFT. Use 1.5" for foundation, 3/4" for floor concrete.</p>`
+    },
+    {
+        title: "Kitchen Design Ideas for Pakistani Homes",
+        category: "Interior",
+        image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=600&q=80",
+        date: "Aug 5, 2026",
+        readTime: "4 min read",
+        excerpt: "Modern and traditional kitchen design ideas suitable for 5 and 10 marla homes.",
+        content: `<h4 class="text-base font-bold text-white">L-Shaped Kitchen (5 Marla)</h4>
+<p class="text-xs text-slate-300">Most space-efficient layout for compact homes. Counter space along two walls with sink at the corner.</p>
+<h4 class="text-base font-bold text-white mt-4">U-Shaped Kitchen (10 Marla)</h4>
+<p class="text-xs text-slate-300">Maximum counter and storage space. Ideal for families who cook frequently. Adds PKR 50,000-1 Lakh extra.</p>
+<h4 class="text-base font-bold text-white mt-4">Cabinet Materials</h4>
+<ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+<li>Marine Plywood: Best for moisture resistance (PKR 2,500-4,000/sheet)</li>
+<li>MDF Board: Budget option (PKR 1,800-2,500/sheet)</li>
+<li>Chipboard: Most affordable but least durable (PKR 1,200-1,800/sheet)</li>
+</ul>`
+    },
+    {
+        title: "Understanding Grey Structure vs Turnkey",
+        category: "Guide",
+        image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80",
+        date: "Jul 28, 2026",
+        readTime: "3 min read",
+        excerpt: "What's included in grey structure and what's needed for a complete turnkey project.",
+        content: `<h4 class="text-base font-bold text-white">Grey Structure Includes:</h4>
+<ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+<li>Foundation excavation + RCC</li>
+<li>Brick masonry (9" external, 4.5" internal walls)</li>
+<li>RCC roof, beams, columns, staircase</li>
+<li>Internal (12mm) and external (20mm) plaster</li>
+<li>Basic underground plumbing + electrical conduit</li>
+<li>Water tanks (underground + overhead)</li>
+</ul>
+<h4 class="text-base font-bold text-white mt-4">Turnkey (A-Category) Adds:</h4>
+<ul class="text-xs text-slate-300 list-disc list-inside space-y-1">
+<li>Flooring (tiles/marble)</li>
+<li>Paint (primer + emulsion, 2 coats)</li>
+<li>Doors, windows, woodwork</li>
+<li>Plumbing fixtures (taps, commodes, showers)</li>
+<li>Electrical fixtures (lights, fans, switches)</li>
+<li>Kitchen (cabinets, countertop, sink)</li>
+</ul>
+<h4 class="text-base font-bold text-white mt-4">Cost Difference: 40-60%</h4>`
+    }
+];
+
+function renderBlogPosts() {
+    const grid = document.getElementById('blogGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const categoryColors = { Guide: 'bg-primary/10 text-primary', Tips: 'bg-amber-500/10 text-amber-400', Safety: 'bg-red-500/10 text-red-400', Market: 'bg-blue-500/10 text-blue-400', Interior: 'bg-purple-500/10 text-purple-400' };
+    blogPosts.forEach((post, idx) => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden group hover:border-primary hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer';
+        card.onclick = () => openBlogModal(idx);
+        card.innerHTML = `
+            <div class="relative h-40 overflow-hidden">
+                <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                <span class="absolute top-3 left-3 px-2 py-0.5 rounded-lg ${categoryColors[post.category] || 'bg-slate-800 text-slate-300'} text-[10px] font-semibold">${post.category}</span>
+            </div>
+            <div class="p-4 space-y-2">
+                <h4 class="text-sm font-bold text-white group-hover:text-primary transition leading-tight">${post.title}</h4>
+                <p class="text-[11px] text-slate-400 line-clamp-2">${post.excerpt}</p>
+                <div class="flex items-center justify-between pt-1 border-t border-slate-800/50">
+                    <span class="text-[10px] text-slate-500">${post.date}</span>
+                    <span class="text-[10px] text-slate-500">${post.readTime}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function openBlogModal(idx) {
+    const post = blogPosts[idx];
+    document.getElementById('blogModalTitle').textContent = post.title;
+    document.getElementById('blogModalContent').innerHTML = `
+        <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover rounded-xl mb-4">
+        <div class="flex items-center gap-3 mb-4">
+            <span class="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-semibold">${post.category}</span>
+            <span class="text-[10px] text-slate-500">${post.date}</span>
+            <span class="text-[10px] text-slate-500">${post.readTime}</span>
+        </div>
+        <div class="prose prose-sm text-slate-300 space-y-3">${post.content}</div>
+        <button onclick="closeBlogModal()" class="mt-6 w-full py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition">Close</button>
+    `;
+    document.getElementById('blogModal').classList.remove('hidden');
+    document.getElementById('blogModal').classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBlogModal() {
+    document.getElementById('blogModal').classList.add('hidden');
+    document.getElementById('blogModal').classList.remove('flex');
+    document.body.style.overflow = '';
+}
+
+// ===================== FEATURE: PRICE NOTIFICATIONS =====================
+const priceAlertsData = [
+    { material: "Steel (Sariya)", change: "+2.4%", direction: "up", price: "PKR 275,000/ton", date: "Sep 3, 2026", reason: "Demand spike in commercial projects" },
+    { material: "Cement", change: "-0.8%", direction: "down", price: "PKR 1,320/bag", date: "Sep 2, 2026", reason: "Stable supply chain flow" },
+    { material: "Bricks (Awal)", change: "+1.5%", direction: "up", price: "PKR 16,500/1000", date: "Sep 1, 2026", reason: "Fuel costs impacting kiln rates" },
+    { material: "Sand (Ravi)", change: "+0.5%", direction: "up", price: "PKR 50/CFT", date: "Aug 30, 2026", reason: "Seasonal demand increase" },
+    { material: "Gravel", change: "-1.2%", direction: "down", price: "PKR 70/CFT", date: "Aug 28, 2026", reason: "New quarry supply online" }
+];
+
+function renderPriceAlerts() {
+    const list = document.getElementById('priceAlertsList');
+    if (!list) return;
+    list.innerHTML = '';
+    priceAlertsData.forEach(alert => {
+        const isUp = alert.direction === 'up';
+        const card = document.createElement('div');
+        card.className = 'bg-slate-950/60 border border-slate-800/60 rounded-xl p-3 space-y-1';
+        card.innerHTML = `
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-white">${alert.material}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isUp ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${isUp ? '▲' : '▼'} ${alert.change}</span>
+            </div>
+            <div class="text-sm font-extrabold text-white">${alert.price}</div>
+            <p class="text-[10px] text-slate-500">${alert.reason}</p>
+            <span class="text-[9px] text-slate-600">${alert.date}</span>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function togglePriceNotification() {
+    const panel = document.getElementById('priceNotifyPanel');
+    const btn = document.getElementById('priceNotifyBtn');
+    const isHidden = panel.classList.contains('hidden');
+    if (isHidden) {
+        panel.classList.remove('hidden');
+        btn.style.display = 'none';
+        setTimeout(() => { panel.style.transform = 'translateX(0)'; }, 10);
+        renderPriceAlerts();
+    } else {
+        panel.style.transform = 'translateX(100%)';
+        btn.style.display = 'flex';
+        setTimeout(() => panel.classList.add('hidden'), 300);
+    }
+}
+
+function subscribePriceAlert() {
+    const email = document.getElementById('alertEmail').value.trim();
+    const checkboxes = document.querySelectorAll('#alertMaterialChecks input:checked');
+    const materials = Array.from(checkboxes).map(cb => cb.value);
+    if (!email) { showToast("Please enter your email to subscribe."); return; }
+    if (materials.length === 0) { showToast("Please select at least one material."); return; }
+    const subscriptions = JSON.parse(localStorage.getItem('pb_price_alerts') || '[]');
+    subscriptions.push({ email, materials, subscribedAt: new Date().toISOString() });
+    localStorage.setItem('pb_price_alerts', JSON.stringify(subscriptions));
+    showToast(`Subscribed! You'll receive alerts for: ${materials.join(', ')}`);
+    document.getElementById('alertEmail').value = '';
+}
 
 // --- FLOOR PLAN PLOT SIZE SWITCHER ---
 function switchPlotSize(size) {

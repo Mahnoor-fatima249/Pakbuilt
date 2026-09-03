@@ -1698,6 +1698,114 @@
 </script>
     </div>
 </section>
+
+<!-- ===================== NEW FEATURE: USER REVIEWS & RATINGS ===================== -->
+<section id="user-reviews" class="max-w-7xl mx-auto px-4 py-12 reveal animate-on-scroll">
+    <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2.5 bg-primary/15 rounded-xl">
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white">Rate & Review</h3>
+                    <p class="text-xs text-slate-400 mt-1">Share your experience and read reviews from other homeowners.</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-extrabold text-primary" id="avgRating">4.8</span>
+                <div class="flex text-amber-400" id="avgStars">★★★★★</div>
+                <span class="text-xs text-slate-400" id="totalReviews">(3 reviews)</span>
+            </div>
+        </div>
+        <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Write a Review
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Name</label>
+                    <input type="text" id="reviewName" placeholder="e.g. Ahmed Khan" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">City</label>
+                    <select id="reviewCity" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary">
+                        <option value="Lahore">Lahore</option><option value="Karachi">Karachi</option><option value="Islamabad">Islamabad</option><option value="Rawalpindi">Rawalpindi</option><option value="Faisalabad">Faisalabad</option><option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Rating</label>
+                <div id="reviewStars" class="flex gap-1 cursor-pointer text-2xl text-slate-600">
+                    <span onclick="setReviewRating(1)" onmouseenter="previewRating(1)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(2)" onmouseenter="previewRating(2)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(3)" onmouseenter="previewRating(3)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(4)" onmouseenter="previewRating(4)" onmouseleave="resetRatingPreview()">★</span>
+                    <span onclick="setReviewRating(5)" onmouseenter="previewRating(5)" onmouseleave="resetRatingPreview()">★</span>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Your Review</label>
+                <textarea id="reviewText" rows="3" placeholder="Tell us about your experience with PakBuild Pro..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-primary resize-vertical"></textarea>
+            </div>
+            <button onclick="submitReview()" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primaryHover text-white text-xs font-semibold transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                Submit Review
+            </button>
+        </div>
+        <div id="reviewsList" class="space-y-4"></div>
+    </div>
+</section>
+
+<!-- ===================== NEW FEATURE: BLOG SECTION ===================== -->
+<section id="blog" class="max-w-7xl mx-auto px-4 py-12 reveal animate-on-scroll">
+    <div class="glass p-6 lg:p-8 rounded-3xl shadow-xl space-y-6">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-primary/15 rounded-xl">
+                <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white">Construction Tips & Guides</h3>
+                <p class="text-xs text-slate-400 mt-1">Expert advice for building your dream home in Pakistan.</p>
+            </div>
+        </div>
+        <div id="blogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+</section>
+<div id="blogModal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+        <div class="sticky top-0 bg-slate-900 border-b border-slate-700 p-4 flex items-center justify-between z-10">
+            <h3 id="blogModalTitle" class="text-lg font-bold text-white"></h3>
+            <button onclick="closeBlogModal()" class="text-slate-400 hover:text-white transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <div id="blogModalContent" class="p-6 space-y-4"></div>
+    </div>
+</div>
+
+<!-- ===================== NEW FEATURE: PRICE NOTIFICATION BELL ===================== -->
+<div id="priceNotifyBtn" onclick="togglePriceNotification()" style="position:fixed;top:50%;right:0;z-index:9997;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:12px 10px;border-radius:12px 0 0 12px;cursor:pointer;box-shadow:0 4px 16px rgba(245,158,11,0.3);writing-mode:vertical-rl;text-orientation:mixed;font-size:11px;font-weight:700;letter-spacing:0.5px;transition:all 0.3s;" onmouseenter="this.style.paddingRight='16px'" onmouseleave="this.style.paddingRight='10px'">🔔 PRICE ALERTS</div>
+<div id="priceNotifyPanel" class="hidden fixed top-0 right-0 z-[9998] h-full w-80 max-w-[90vw] bg-slate-900 border-l border-slate-700 shadow-2xl transition-transform duration-300" style="transform:translateX(100%);">
+    <div class="h-full flex flex-col">
+        <div class="p-5 border-b border-slate-700 flex items-center justify-between bg-gradient-to-r from-amber-500/10 to-transparent">
+            <div class="flex items-center gap-2"><span class="text-lg">🔔</span><h3 class="text-sm font-bold text-white">Price Alerts</h3></div>
+            <button onclick="togglePriceNotification()" class="text-slate-400 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="priceAlertsList"></div>
+        <div class="p-4 border-t border-slate-700 space-y-3">
+            <h4 class="text-xs font-bold text-slate-300 uppercase">Subscribe to Alerts</h4>
+            <input type="email" id="alertEmail" placeholder="your@email.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-amber-500">
+            <div class="flex flex-wrap gap-2" id="alertMaterialChecks">
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="cement" checked class="accent-amber-500"> Cement</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="steel" checked class="accent-amber-500"> Steel</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="bricks" class="accent-amber-500"> Bricks</label>
+                <label class="flex items-center gap-1.5 text-[11px] text-slate-300 cursor-pointer"><input type="checkbox" value="sand" class="accent-amber-500"> Sand</label>
+            </div>
+            <button onclick="subscribePriceAlert()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-white text-xs font-semibold transition">Subscribe to Alerts</button>
+        </div>
+    </div>
+</div>
+
 <!-- 3-COLUMN FOOTER -->
 <footer class="bg-slate-900/80 border-t border-slate-800 py-12 px-4">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -4832,6 +4940,9 @@ function changeLanguage(lang) {
             try { initCalendar(); } catch(e) { console.error('calendar error', e); }
             try { renderDesignGallery('all'); } catch(e) { console.error('gallery error', e); }
             try { renderFloorPlan3D(5); } catch(e) { console.error('floorplan 3d error', e); }
+            try { loadReviews(); } catch(e) { console.error('reviews error', e); }
+            try { renderBlogPosts(); } catch(e) { console.error('blog error', e); }
+            try { renderPriceAlerts(); } catch(e) { console.error('alerts error', e); }
         });
 
 function handleContractorInquiry(event) {
@@ -5593,6 +5704,175 @@ function switchPlotSize(size) {
         <button onclick="closeBookingModal()" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;padding:10px 28px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;">Done</button>
     </div>
 </div>
+
+<script>
+// ===================== USER REVIEWS & RATINGS =====================
+let currentReviewRating = 0;
+const defaultReviews = [
+    { name: "Ahmed Khan", city: "Lahore", rating: 5, text: "PakBuild Pro helped me estimate my house construction cost very accurately. The material breakdown was spot on! Highly recommended for anyone planning to build in Pakistan.", date: "2026-02-15" },
+    { name: "Fatima Malik", city: "Karachi", rating: 4, text: "Great tool for getting a quick estimate. The design gallery is beautiful and the PDF export is very useful. Would love to see more design options in the future.", date: "2026-01-28" },
+    { name: "Usman Ali", city: "Islamabad", rating: 5, text: "As a contractor, I use this tool to give quick quotes to my clients. The material rates are up to date and the UI is very professional. Best construction calculator in Pakistan!", date: "2026-03-01" }
+];
+
+function loadReviews() {
+    let reviews = JSON.parse(localStorage.getItem('pakbuild_reviews') || '[]');
+    if (reviews.length === 0) {
+        reviews = defaultReviews;
+        localStorage.setItem('pakbuild_reviews', JSON.stringify(reviews));
+    }
+    renderReviewsList(reviews);
+    updateReviewStats(reviews);
+}
+
+function renderReviewsList(reviews) {
+    const container = document.getElementById('reviewsList');
+    if (!container) return;
+    if (reviews.length === 0) { container.innerHTML = '<p class="text-slate-400 text-sm text-center py-4">No reviews yet. Be the first to review!</p>'; return; }
+    container.innerHTML = reviews.slice(0, 10).map(r => `
+        <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 space-y-3 hover:border-slate-600 transition">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold text-sm">${r.name.charAt(0)}</div>
+                    <div><p class="text-sm font-bold text-white">${r.name}</p><p class="text-[11px] text-slate-400">${r.city}</p></div>
+                </div>
+                <div class="text-right"><div class="flex text-amber-400 text-sm">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div><p class="text-[10px] text-slate-500 mt-0.5">${r.date}</p></div>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${r.text}</p>
+        </div>
+    `).join('');
+}
+
+function updateReviewStats(reviews) {
+    const avg = reviews.length > 0 ? (reviews.reduce((a,b) => a + b.rating, 0) / reviews.length).toFixed(1) : '0.0';
+    const fullStars = Math.floor(parseFloat(avg));
+    const avgEl = document.getElementById('avgRating');
+    const starsEl = document.getElementById('avgStars');
+    const totalEl = document.getElementById('totalReviews');
+    if (avgEl) avgEl.textContent = avg;
+    if (starsEl) starsEl.innerHTML = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+    if (totalEl) totalEl.textContent = `(${reviews.length} review${reviews.length !== 1 ? 's' : ''})`;
+}
+
+function setReviewRating(stars) { currentReviewRating = stars; updateStarDisplay(stars); }
+function previewRating(stars) { updateStarDisplay(stars); }
+function resetRatingPreview() { updateStarDisplay(currentReviewRating); }
+function updateStarDisplay(stars) { const el = document.getElementById('reviewStars'); if (!el) return; el.querySelectorAll('span').forEach((s,i) => { s.style.color = i < stars ? '#f59e0b' : '#475569'; }); }
+
+function submitReview() {
+    const name = document.getElementById('reviewName')?.value?.trim();
+    const city = document.getElementById('reviewCity')?.value;
+    const text = document.getElementById('reviewText')?.value?.trim();
+    if (!name || !text || currentReviewRating === 0) { showToast('Please fill in your name, rating, and review.'); return; }
+    const review = { name, city, rating: currentReviewRating, text, date: new Date().toISOString().split('T')[0] };
+    let reviews = JSON.parse(localStorage.getItem('pakbuild_reviews') || '[]');
+    reviews.unshift(review);
+    localStorage.setItem('pakbuild_reviews', JSON.stringify(reviews));
+    renderReviewsList(reviews);
+    updateReviewStats(reviews);
+    document.getElementById('reviewName').value = '';
+    document.getElementById('reviewText').value = '';
+    currentReviewRating = 0;
+    updateStarDisplay(0);
+    showToast('Review submitted successfully!');
+}
+
+// ===================== BLOG SECTION =====================
+const blogPosts = [
+    { id: 1, title: "Complete Guide to House Construction Costs in Pakistan 2026", category: "Cost Guide", readTime: "8 min", date: "Mar 2026", image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&h=400&fit=crop", excerpt: "Everything you need to know about construction costs, from foundation to finishing, with updated 2026 rates.", content: "Building a house in Pakistan requires careful planning and budgeting. In 2026, construction costs vary significantly based on location, material quality, and design complexity. This comprehensive guide covers grey structure costs (PKR 2,800-4,500 per sq ft) and finishing costs (PKR 3,000-8,000 per sq ft). Key factors include: material selection (local vs imported), labor availability, soil conditions, and architectural design. We recommend getting at least 3 contractor quotes and using tools like PakBuild Pro to get accurate estimates before committing to a budget." },
+    { id: 2, title: "Top 5 Building Materials to Watch in 2026", category: "Materials", readTime: "5 min", date: "Feb 2026", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop", excerpt: "Stay updated on the latest building material trends and prices in the Pakistani market.", content: "The Pakistani construction market is evolving rapidly. Here are the top materials to watch: 1) Ready-Mix Concrete - gaining popularity for quality consistency, 2) Steel Reinforcement - prices fluctuating due to global market trends, 3) Fly Ash Bricks - eco-friendly alternative to clay bricks, 4) Waterproofing Compounds - essential for Pakistan's monsoon season, 5) Solar-Integrated Roofing - emerging trend for energy-efficient homes. Always compare prices across multiple suppliers and consider bulk purchasing for significant savings." },
+    { id: 3, title: "How to Choose the Right Contractor in Lahore", category: "Tips", readTime: "6 min", date: "Jan 2026", image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&h=400&fit=crop", excerpt: "A practical checklist for vetting and selecting reliable construction contractors.", content: "Choosing the right contractor is crucial for your construction project. In Lahore's competitive market, always: 1) Verify Naya Pakistan Housing registration, 2) Check previous work and references, 3) Get detailed written contracts with timelines, 4) Ensure they have proper insurance, 5) Agree on payment milestones tied to progress, 6) Visit their ongoing sites. Red flags include demands for large upfront payments, no written contracts, and reluctance to provide references." },
+    { id: 4, title: "Understanding Grey Structure vs Full Finishing", category: "Cost Guide", readTime: "7 min", date: "Dec 2025", image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&h=400&fit=crop", excerpt: "Learn the difference between grey structure and complete finishing, and how each affects your budget.", content: "Grey structure includes the basic skeleton: foundation, columns, beams, walls, and roof. It typically costs PKR 2,800-4,500 per sq ft. Full finishing adds flooring, painting, plumbing fixtures, electrical fittings, kitchen cabinets, and more, adding PKR 3,000-8,000 per sq ft. For a 10-marla house (2,225 sq ft), expect PKR 63-77 lakhs for grey structure and PKR 67-178 lakhs for finishing. Planning your budget in phases helps manage cash flow effectively." },
+    { id: 5, title: "Weather-Resistant Construction Tips for Karachi", category: "Tips", readTime: "5 min", date: "Nov 2025", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&h=400&fit=crop", excerpt: "Protect your investment with these essential weather-proofing techniques for coastal areas.", content: "Karachi's coastal climate presents unique challenges: high humidity, salt air, and heavy monsoon rains. Essential weather-proofing tips include: 1) Use marine-grade waterproofing for foundations, 2) Install proper drainage systems, 3) Choose corrosion-resistant reinforcement steel, 4) Apply anti-carbonation coatings on exposed concrete, 5) Use damp-proof courses in walls, 6) Ensure proper roof waterproofing with membrane systems." },
+    { id: 6, title: "Smart Home Integration: Modern Construction Trends", category: "Design", readTime: "6 min", date: "Oct 2025", image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=600&h=400&fit=crop", excerpt: "Future-proof your home with smart technology integration during the construction phase.", content: "Smart homes are no longer a luxury in Pakistan. Integrating technology during construction is more cost-effective than retrofitting. Key considerations: 1) Pre-wire for ethernet in every room, 2) Install smart switches and outlets during electrical rough-in, 3) Plan for centralized AC control systems, 4) Set up security camera conduit during framing, 5) Install solar panel-ready roofing, 6) Plan for backup power systems. Starting early can save 30-40% compared to post-construction installation." }
+];
+
+function renderBlogPosts() {
+    const container = document.getElementById('blogGrid');
+    if (!container) return;
+    container.innerHTML = blogPosts.map(post => `
+        <article class="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer group" onclick="openBlogModal(${post.id})">
+            <div class="h-44 overflow-hidden relative">
+                <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                <div class="absolute top-3 left-3 bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">${post.category}</div>
+            </div>
+            <div class="p-5 space-y-3">
+                <div class="flex items-center gap-2 text-[10px] text-slate-400"><span>${post.date}</span><span class="w-1 h-1 bg-slate-600 rounded-full"></span><span>${post.readTime} read</span></div>
+                <h4 class="text-sm font-bold text-white group-hover:text-primary transition line-clamp-2">${post.title}</h4>
+                <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">${post.excerpt}</p>
+                <div class="flex items-center gap-1.5 text-primary text-[11px] font-semibold group-hover:gap-2.5 transition-all">Read More <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></div>
+            </div>
+        </article>
+    `).join('');
+}
+
+function openBlogModal(id) {
+    const post = blogPosts.find(p => p.id === id);
+    if (!post) return;
+    document.getElementById('blogModalTitle').textContent = post.title;
+    document.getElementById('blogModalContent').innerHTML = `
+        <img src="${post.image}" alt="${post.title}" class="w-full h-56 object-cover rounded-xl mb-4">
+        <div class="flex items-center gap-3 text-xs text-slate-400 mb-4">
+            <span class="px-2.5 py-1 bg-primary/10 text-primary rounded-lg font-semibold">${post.category}</span>
+            <span>${post.date}</span><span>•</span><span>${post.readTime} read</span>
+        </div>
+        <div class="text-sm text-slate-300 leading-relaxed space-y-4">${post.content.split('. ').reduce((acc, sentence, i) => { if (i % 3 === 0) acc.push('<p>'); acc.push(sentence + (i % 3 !== 2 ? '. ' : '. </p>')); if (i === post.content.split('. ').length - 1 && acc[acc.length-1].indexOf('</p>') === -1) acc[acc.length-1] += '</p>'; return acc; }, []).join('')}</div>
+    `;
+    document.getElementById('blogModal').classList.remove('hidden');
+    document.getElementById('blogModal').classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBlogModal() { document.getElementById('blogModal').classList.add('hidden'); document.getElementById('blogModal').classList.remove('flex'); document.body.style.overflow = ''; }
+
+// ===================== PRICE NOTIFICATIONS =====================
+const priceAlertsData = [
+    { id: 1, material: "Cement (50kg bag)", price: "PKR 1,250", change: "+3.2%", trend: "up", date: "Today" },
+    { id: 2, material: "Steel (per kg)", price: "PKR 262", change: "-1.1%", trend: "down", date: "Today" },
+    { id: 3, material: "Bricks (per 1000)", price: "PKR 16,500", change: "+0.8%", trend: "up", date: "Yesterday" },
+    { id: 4, material: "Sand (per cubic ft)", price: "PKR 85", change: "+2.1%", trend: "up", date: "Yesterday" },
+    { id: 5, material: "Crush (per cubic ft)", price: "PKR 130", change: "0%", trend: "stable", date: "2 days ago" },
+    { id: 6, material: "Gravel (per cubic ft)", price: "PKR 95", change: "-0.5%", trend: "down", date: "2 days ago" },
+    { id: 7, material: "Wood (per cubic ft)", price: "PKR 4,200", change: "+5.4%", trend: "up", date: "3 days ago" },
+    { id: 8, material: "Pipe (1.5 inch)", price: "PKR 580", change: "+1.3%", trend: "up", date: "3 days ago" }
+];
+
+function renderPriceAlerts() {
+    const container = document.getElementById('priceAlertsList');
+    if (!container) return;
+    container.innerHTML = '<h4 class="text-xs font-bold text-slate-300 uppercase mb-2">Recent Price Changes</h4>' + priceAlertsData.map(a => `
+        <div class="bg-slate-950/50 border border-slate-800 rounded-xl p-3 hover:border-slate-600 transition">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-semibold text-white">${a.material}</span>
+                <span class="text-xs font-bold ${a.trend === 'up' ? 'text-red-400' : a.trend === 'down' ? 'text-green-400' : 'text-slate-400'}">${a.change}</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-sm font-bold text-primary">${a.price}</span>
+                <span class="text-[10px] text-slate-500">${a.date}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function togglePriceNotification() {
+    const panel = document.getElementById('priceNotifyPanel');
+    const btn = document.getElementById('priceNotifyBtn');
+    const isOpen = !panel.classList.contains('hidden');
+    if (isOpen) { panel.style.transform = 'translateX(100%)'; setTimeout(() => panel.classList.add('hidden'), 300); btn.style.display = ''; }
+    else { panel.classList.remove('hidden'); requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; }); btn.style.display = 'none'; }
+}
+
+function subscribePriceAlert() {
+    const email = document.getElementById('alertEmail')?.value?.trim();
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email address.'); return; }
+    const checked = [...document.querySelectorAll('#alertMaterialChecks input:checked')].map(c => c.value);
+    if (checked.length === 0) { showToast('Please select at least one material.'); return; }
+    const saved = JSON.parse(localStorage.getItem('pakbuild_price_alerts') || '[]');
+    saved.push({ email, materials: checked, date: new Date().toISOString().split('T')[0] });
+    localStorage.setItem('pakbuild_price_alerts', JSON.stringify(saved));
+    showToast('Price alert subscription saved! We\'ll notify you at ' + email);
+    document.getElementById('alertEmail').value = '';
+}
+</script>
 
 </body>
 </html>
