@@ -425,12 +425,13 @@
 
         function demoLogin() {
             let users = getLocalUsers();
+            const demoId = 'demo_' + Date.now();
             if (!users.find(u => u.email === 'demo@pakbuild.com')) {
-                users.push({ id: 'demo_' + Date.now(), name: 'Demo User', email: 'demo@pakbuild.com', phone: '923001234567', password: 'demo123', role: 'user', createdAt: new Date().toISOString(), savedProjects: [{ plotSize: '5', city: 'Lahore', constructionType: 'Grey Structure', floors: 1, totalCost: 1850000, savedAt: '2026-07-20' }, { plotSize: '10', city: 'Islamabad', constructionType: 'Complete', floors: 2, totalCost: 5200000, savedAt: '2026-07-25' }], bookings: [{ date: '2026-08-02', timeSlot: '10:00 AM - 11:00 AM', serviceType: 'Site Visit', city: 'Lahore', status: 'confirmed' }], inquiries: [] });
+                users.push({ id: demoId, name: 'Demo User', email: 'demo@pakbuild.com', phone: '923001234567', role: 'user', createdAt: new Date().toISOString(), savedProjects: [{ plotSize: '5', city: 'Lahore', constructionType: 'Grey Structure', floors: 1, totalCost: 1850000, savedAt: '2026-07-20' }, { plotSize: '10', city: 'Islamabad', constructionType: 'Complete', floors: 2, totalCost: 5200000, savedAt: '2026-07-25' }], bookings: [{ date: '2026-08-02', timeSlot: '10:00 AM - 11:00 AM', serviceType: 'Site Visit', city: 'Lahore', status: 'confirmed' }], inquiries: [] });
                 saveLocalUsers(users);
             }
-            localStorage.setItem('pakbuild_token', 'demo_' + Date.now());
-            localStorage.setItem('pakbuild_user', JSON.stringify({ id: 'demo_' + Date.now(), name: 'Demo User', email: 'demo@pakbuild.com', phone: '923001234567', role: 'user' }));
+            localStorage.setItem('pakbuild_token', 'demo_' + Date.now() + '_' + crypto.randomUUID());
+            localStorage.setItem('pakbuild_user', JSON.stringify({ id: demoId, name: 'Demo User', email: 'demo@pakbuild.com', phone: '923001234567', role: 'user' }));
             spawnConfetti();
             showToast('Demo account logged in!', 'success');
             setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
@@ -499,7 +500,7 @@
             const user = users.find(u => u.email === email);
             if (!user) { errorDiv.textContent = 'Account not found. Please sign up first.'; errorDiv.classList.remove('hidden'); resetBtn(btn); return; }
             if (user.password !== password) { errorDiv.textContent = 'Invalid password. Please try again.'; errorDiv.classList.remove('hidden'); resetBtn(btn); return; }
-            localStorage.setItem('pakbuild_token', 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+            localStorage.setItem('pakbuild_token', 'local_' + Date.now() + '_' + crypto.randomUUID());
             localStorage.setItem('pakbuild_user', JSON.stringify({ id: user.id, name: user.name, email: user.email, phone: user.phone || '', role: user.role }));
             spawnConfetti();
             showToast('Login successful!', 'success');

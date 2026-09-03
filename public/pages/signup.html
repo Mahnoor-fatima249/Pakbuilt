@@ -513,7 +513,7 @@
             if (users.find(u => u.email === email)) { errorDiv.textContent = 'Email already registered. Please login.'; errorDiv.classList.remove('hidden'); resetBtn(btn); return; }
             const newUser = { id: 'user_' + Date.now(), name, email, phone, password, role: 'user', createdAt: new Date().toISOString(), savedProjects: [], bookings: [], inquiries: [] };
             users.push(newUser); saveLocalUsers(users);
-            localStorage.setItem('pakbuild_token', 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+            localStorage.setItem('pakbuild_token', 'local_' + Date.now() + '_' + crypto.randomUUID());
             localStorage.setItem('pakbuild_user', JSON.stringify({ id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone, role: newUser.role }));
             spawnConfetti(); showToast('Account created!', 'success');
             setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
