@@ -4,7 +4,7 @@
 
 A full-stack web application that helps homeowners, contractors, and builders in Pakistan accurately estimate house construction costs, explore modern home designs, and track real-time material prices.
 
-**Live Site:** [https://mahnoor-fatima249.github.io/Pakbuilt](https://mahnoor-fatima249.github.io/Pakbuilt)
+**Live Site:** [https://mahnoor-fatima249.github.io/Pakbuilt](https://mahnoor-fatima249.github.io/Pakbuilt/public/index.html)
 
 ---
 
